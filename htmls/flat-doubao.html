@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>扁平化UI设计模板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            border: 1px solid #ccc;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .scrollable-content {
+            height: calc(100% - 112px);
+            overflow-y: auto;
+        }
+        
+        .card-hover {
+            transition: transform 0.2s, filter 0.2s;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            filter: brightness(0.98);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- 定义SVG图标 -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="icon-home" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </symbol>
+        <symbol id="icon-search" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </symbol>
+        <symbol id="icon-notifications" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+        </symbol>
+        <symbol id="icon-profile" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </symbol>
+        <symbol id="icon-settings" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+        </symbol>
+    </svg>
+
+    <div class="flex flex-wrap justify-center gap-8 p-8">
+        <!-- 首页 -->
+        <div class="phone-frame bg-white">
+            <!-- 状态栏 -->
+            <div class="bg-blue-500 text-white px-6 py-3 flex justify-between items-center">
+                <span>9:41</span>
+                <div class="flex space-x-2">
+                    <i class="fa fa-signal"></i>
+                    <i class="fa fa-wifi"></i>
+                    <i class="fa fa-battery-full"></i>
+                </div>
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="scrollable-content p-4">
+                <div class="mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800">首页</h1>
+                    <p class="text-gray-500">欢迎使用扁平化设计应用</p>
+                </div>
+                
+                <!-- 快捷卡片 -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-blue-500 text-white p-4 rounded card-hover">
+                        <i class="fa fa-line-chart text-2xl mb-2"></i>
+                        <h3 class="font-medium">数据分析</h3>
+                    </div>
+                    <div class="bg-green-500 text-white p-4 rounded card-hover">
+                        <i class="fa fa-calendar text-2xl mb-2"></i>
+                        <h3 class="font-medium">日程安排</h3>
+                    </div>
+                    <div class="bg-orange-500 text-white p-4 rounded card-hover">
+                        <i class="fa fa-users text-2xl mb-2"></i>
+                        <h3 class="font-medium">团队协作</h3>
+                    </div>
+                    <div class="bg-purple-500 text-white p-4 rounded card-hover">
+                        <i class="fa fa-cog text-2xl mb-2"></i>
+                        <h3 class="font-medium">设置中心</h3>
+                    </div>
+                </div>
+                
+                <!-- 内容卡片 -->
+                <div class="bg-white border border-gray-200 rounded mb-6 card-hover">
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-medium text-gray-800">最新动态</h3>
+                            <span class="text-blue-500 text-sm">查看全部</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fa fa-bell text-blue-500"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-800">系统更新通知</p>
+                                    <p class="text-gray-500 text-sm">今天 10:30</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fa fa-user-plus text-green-500"></i>
+                                </div>
+                                <div>
+                                    <p class="text-gray-800">新成员加入</p>
+                                    <p class="text-gray-500 text-sm">昨天 14:20</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 图表区域 -->
+                <div class="bg-white border border-gray-200 rounded p-4 mb-6">
+                    <h3 class="font-medium text-gray-800 mb-3">数据统计</h3>
+                    <div class="h-64">
+                        <canvas id="dashboardChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- 几何图形装饰 -->
+                <div class="relative h-32 mb-6">
+                    <svg width="100%" height="100%" viewBox="0 0 300 128" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="80" height="80" fill="#2196F3" rx="4"/>
+                        <circle cx="200" cy="64" r="40" fill="#4CAF50"/>
+                        <polygon points="140,20 180,64 140,108 100,64" fill="#FF9800"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="bg-white border-t border-gray-200 flex justify-around items-center h-16 absolute bottom-0 w-full">
+                <a href="#" class="flex flex-col items-center text-blue-500">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                    <span class="text-xs">首页</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-gray-500">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-search"/></svg>
+                    <span class="text-xs">发现</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-gray-500">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-notifications"/></svg>
+                    <span class="text-xs">通知</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-gray-500">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-profile"/></svg>
+                    <span class="text-xs">我的</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- 数据分析页 -->
+        <div class="phone-frame bg-white">
+            <!-- 状态栏 -->
+            <div class="bg-green-500 text-white px-6 py-3 flex justify-between items-center">
+                <span>9:43</span>
+                <div class="flex space-x-2">
+                    <i class="fa fa-signal"></i>
+                    <i class="fa fa-wifi"></i>
+                    <i class="fa fa-battery-full"></i>
+                </div>
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="scrollable-content p-4">
+                <div class="mb-6">
+                    <div class="flex items-center mb-2">
+                        <button class="mr-3 text-gray-500">
+                            <i class="fa fa-arrow-left"></i>
+                        </button>
+                        <h1 class="text-2xl font-bold text-gray-800">数据分析</h1>
+                    </div>
+                    <p class="text-gray-500">详细数据统计和分析</p>
+                </div>
+                
+                <!-- 筛选器 -->
+                <div class="bg-gray-100 rounded p-3 mb-6">
+                    <div class="flex justify-between items-center">
+                        <div class="flex space-x-2">
+                            <button class="bg-green-500 text-white px-3 py-1 rounded text-sm">日</button>
+                            <button class="bg-white text-gray-700 px-3 py-1 rounded text-sm">周</button>
+                            <button class="bg-white text-gray-700 px-3 py-1 rounded text-sm">月</button>
+                        </div>
+                        <button class="bg-white text-gray-700 px-3 py-1 rounded text-sm">
+                            <i class="fa fa-download mr-1"></i>导出
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 主要图表 -->
+                <div class="bg-white border border-gray-200 rounded p-4 mb-6">
+                    <h3 class="font-medium text-gray-800 mb-3">流量统计</h3>
+                    <div class="h-64 mb-3">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div>
+                            <p class="text-gray-500 text-sm">访问量</p>
+                            <p class="font-bold text-gray-800">2,451</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm">新增用户</p>
+                            <p class="font-bold text-green-500">+421</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm">转化率</p>
+                            <p class="font-bold text-blue-500">16.2%</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 数据卡片 -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white border border-gray-200 rounded p-4 card-hover">
+                        <h4 class="text-gray-500 text-sm mb-1">用户活跃度</h4>
+                        <div class="h-32">
+                            <canvas id="chart1"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded p-4 card-hover">
+                        <h4 class="text-gray-500 text-sm mb-1">来源分布</h4>
+                        <div class="h-32">
+                            <canvas id="chart2"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 数据列表 -->
+                <div class="bg-white border border-gray-200 rounded mb-6">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="font-medium text-gray-800">热门内容</h3>
+                    </div>
+                    <div class="divide-y divide-gray-200">
+                        <div class="p-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-gray-800">产品介绍</p>
+                                <p class="text-gray-500 text-sm">2.4K 浏览</p>
+                            </div>
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-blue-500 font-bold">1</span>
+                            </div>
+                        </div>
+                        <div class="p-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-gray-800">使用教程</p>
+                                <p class="text-gray-500 text-sm">1.8K 浏览</p>
+                            </div>
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                <span class="text-green-500 font-bold">2</span>
+                            </div>
+                        </div>
+                        <div class="p-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-gray-800">常见问题</p>
+                                <p class="text-gray-500 text-sm">1.2K 浏览</p>
+                            </div>
+                            <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
+                                <span class="text-orange-500 font-bold">3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="bg-white border-t border-gray-200 flex justify-around items-center h-16 absolute bottom-0 w-full">
+                <a href="#" class="flex flex-col items-center text-gray-500">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                    <span class="text-xs">首页</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-green-500">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-search"/></svg>
+                    <span class="text-xs">发现</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-gray-500">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-notifications"/></svg>
+                    <span class="text-xs">通知</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-gray-500">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-profile"/></svg>
+                    <span class="text-xs">我的</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- 个人中心页 -->
+        <div class="phone-frame bg-white">
+            <!-- 状态栏 -->
+            <div class="bg-purple-500 text-white px-6 py-3 flex justify-between items-center">
+                <span>9:45</span>
+                <div class="flex space-x-2">
+                    <i class="fa fa-signal"></i>
+                    <i class="fa fa-wifi"></i>
+                    <i class="fa fa-battery-full"></i>
+                </div>
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="scrollable-content">
+                <!-- 个人信息头部 -->
+                <div class="bg-purple-500 text-white p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-16 h-16 bg-white rounded-full overflow-hidden mr-4">
+                            <img src="https://picsum.photos/200/200" alt="用户头像" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold">张三</h2>
+                            <p class="text-purple-200">高级会员</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div>
+                            <p class="text-2xl font-bold">128</p>
+                            <p class="text-purple-200 text-sm">积分</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold">16</p>
+                            <p class="text-purple-200 text-sm">收藏</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold">8</p>
+                            <p class="text-purple-200 text-sm">待办</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 功能列表 -->
+                <div class="p-4">
+                    <div class="bg-white border border-gray-200 rounded mb-4">
+                        <div class="divide-y divide-gray-200">
+                            <div class="p-4 flex justify-between items-center card-hover">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fa fa-user text-blue-500"></i>
+                                    </div>
+                                    <span class="text-gray-800">个人资料</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-gray-400"></i>
+                            </div>
+                            <div class="p-4 flex justify-between items-center card-hover">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fa fa-bell text-green-500"></i>
+                                    </div>
+                                    <span class="text-gray-800">通知设置</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-gray-400"></i>
+                            </div>
+                            <div class="p-4 flex justify-between items-center card-hover">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fa fa-lock text-orange-500"></i>
+                                    </div>
+                                    <span class="text-gray-800">账号安全</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-gray-400"></i>
+                            </div>
+                            <div class="p-4 flex justify-between items-center card-hover">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fa fa-payment text-purple-500"></i>
+                                    </div>
+                                    <span class="text-gray-800">会员中心</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-gray-200 rounded mb-4">
+                        <div class="p-4 border-b border-gray-200">
+                            <h3 class="font-medium text-gray-800">我的作品</h3>
+                        </div>
+                        <div class="p-4 grid grid-cols-3 gap-2">
+                            <div class="bg-gray-100 rounded overflow-hidden card-hover">
+                                <img src="https://picsum.photos/100/100?random=1" alt="作品1" class="w-full h-full object-cover">
+                            </div>
+                            <div class="bg-gray-100 rounded overflow-hidden card-hover">
+                                <img src="https://picsum.photos/100/100?random=2" alt="作品2" class="w-full h-full object-cover">
+                            </div>
+                            <div class="bg-gray-100 rounded overflow-hidden card-hover">
+                                <img src="https://picsum.photos/100/100?random=3" alt="作品3" class="w-full h-full object-cover">
+                            </div>
+                            <div class="bg-gray-100 rounded overflow-hidden card-hover">
+                                <img src="https://picsum.photos/100/100?random=4" alt="作品4" class="w-full h-full object-cover">
+                            </div>
+                            <div class="bg-gray-100 rounded overflow-hidden card-hover">
+                                <img src="https://picsum.photos/100/100?random=5" alt="作品5" class="w-full h-full object-cover">
+                            </div>
+                            <div class="bg-gray-100 rounded overflow-hidden card-hover flex items-center justify-center">
+                                <i class="fa fa-plus text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 设置卡片 -->
+                    <div class="bg-white border border-gray-200 rounded">
+                        <div class="divide-y divide-gray-200">
+                            <div class="p-4 flex justify-between items-center card-hover">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-3">
+                                        <svg class="w-5 h-5 text-gray-500"><use href="#icon-settings"/></svg>
+                                    </div>
+                                    <span class="text-gray-800">系统设置</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-gray-400"></i>
+                            </div>
+                            <div class="p-4 flex justify-between items-center card-hover">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fa fa-question-circle text-red-500"></i>
+                                    </div>
+                                    <span class="text-gray-800">帮助中心</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-gray-400"></i>
+                            </div>
+                            <div class="p-4 flex justify-between items-center card-hover">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fa fa-info-circle text-yellow-500"></i>
+                                    </div>
+                                    <span class="text-gray-800">关于我们</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-gray-400"></i>
+                            </div>
+                            <div class="p-4">
+                                <button class="w-full bg-red-500 text-white py-2 rounded">退出登录</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="bg-white border-t border-gray-200 flex justify-around items-center h-16 absolute bottom-0 w-full">
+                <a href="#" class="flex flex-col items-center text-gray-500">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                    <span class="text-xs">首页</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-gray-500">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-search"/></svg>
+                    <span class="text-xs">发现</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-gray-500">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-notifications"/></svg>
+                    <span class="text-xs">通知</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-purple-500">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-profile"/></svg>
+                    <span class="text-xs">我的</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 首页图表
+        const dashboardCtx = document.getElementById('dashboardChart').getContext('2d');
+        new Chart(dashboardCtx, {
+            type: 'line',
+            data: {
+                labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                datasets: [{
+                    label: '访问量',
+                    data: [120, 190, 150, 250, 220, 300, 280],
+                    borderColor: '#2196F3',
+                    backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        // 主要图表
+        const mainCtx = document.getElementById('mainChart').getContext('2d');
+        new Chart(mainCtx, {
+            type: 'bar',
+            data: {
+                labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                datasets: [
+                    {
+                        label: '访问量',
+                        data: [650, 590, 800, 810, 960, 1020],
+                        backgroundColor: '#2196F3'
+                    },
+                    {
+                        label: '转化量',
+                        data: [280, 320, 390, 410, 480, 520],
+                        backgroundColor: '#4CAF50'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        // 图表1 - 用户活跃度
+        const chart1Ctx = document.getElementById('chart1').getContext('2d');
+        new Chart(chart1Ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['高', '中', '低'],
+                datasets: [{
+                    data: [30, 50, 20],
+                    backgroundColor: ['#4CAF50', '#FF9800', '#F44336'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+        
+        // 图表2 - 来源分布
+        const chart2Ctx = document.getElementById('chart2').getContext('2d');
+        new Chart(chart2Ctx, {
+            type: 'pie',
+            data: {
+                labels: ['网页', '移动端', '小程序', '其他'],
+                datasets: [{
+                    data: [40, 35, 20, 5],
+                    backgroundColor: ['#2196F3', '#4CAF50', '#9C27B0', '#FF9800'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

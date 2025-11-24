@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛博朋克UI设计模板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-glow-cyan {
+                text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 15px #00ffff, 0 0 20px #00ffff;
+            }
+            .text-glow-pink {
+                text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 15px #ff00ff, 0 0 20px #ff00ff;
+            }
+            .text-glow-green {
+                text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41, 0 0 15px #00ff41;
+            }
+            .border-glow-cyan {
+                box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+            }
+            .border-glow-pink {
+                box-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+            }
+            .card-glow {
+                box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2), 0 0 10px rgba(0, 255, 255, 0.1);
+            }
+            .glitch-effect {
+                position: relative;
+            }
+            .glitch-effect::before {
+                content: attr(data-text);
+                position: absolute;
+                left: -2px;
+                top: 0;
+                color: #ff00ff;
+                opacity: 0.7;
+                z-index: -1;
+            }
+            .glitch-effect::after {
+                content: attr(data-text);
+                position: absolute;
+                left: 2px;
+                top: 0;
+                color: #00ffff;
+                opacity: 0.7;
+                z-index: -1;
+            }
+            .matrix-bg {
+                background: #0a0a0a;
+                position: relative;
+                overflow: hidden;
+            }
+            .scan-line {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 5px;
+                background: rgba(0, 255, 255, 0.3);
+                animation: scan 4s linear infinite;
+                z-index: 10;
+                pointer-events: none;
+            }
+            .grid-bg {
+                background-image: 
+                    linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+            .pulse {
+                animation: pulse 2s infinite;
+            }
+            .breathing {
+                animation: breathing 3s ease-in-out infinite;
+            }
+            .data-flow {
+                animation: data-flow 8s linear infinite;
+            }
+            .float {
+                animation: float 6s ease-in-out infinite;
+            }
+            @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.6; }
+            }
+            @keyframes breathing {
+                0%, 100% { box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff; }
+                50% { box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff; }
+            }
+            @keyframes scan {
+                0% { top: 0; }
+                100% { top: 100%; }
+            }
+            @keyframes data-flow {
+                0% { transform: translateY(0); }
+                100% { transform: translateY(-100%); }
+            }
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+        }
+    </style>
+    <style>
+        /* 矩阵数字雨效果 */
+        #matrix-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.2;
+        }
+        
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00ffff;
+            box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+        }
+        
+        /* 扫描线效果 */
+        .scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.03) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            background-size: 100% 4px;
+            z-index: 20;
+            pointer-events: none;
+        }
+        
+        /* 故障艺术效果 */
+        .glitch {
+            animation: glitch 1s linear infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        /* 霓虹按钮效果 */
+        .neon-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .neon-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(0, 255, 255, 0) 0%,
+                rgba(0, 255, 255, 0.3) 50%,
+                rgba(0, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s linear infinite;
+        }
+        @keyframes shine {
+            0% { transform: rotate(30deg) translateX(-100%); }
+            100% { transform: rotate(30deg) translateX(100%); }
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-200 font-mono flex flex-wrap justify-center p-5 gap-5">
+    <!-- 定义SVG图标 -->
+    <svg width="0" height="0" class="hidden">
+        <defs>
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="5" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+            <!-- 赛博朋克风格图形 -->
+            <symbol id="cyber-grid" viewBox="0 0 100 100">
+                <rect width="100" height="100" fill="none" stroke="#00ffff" stroke-width="1" filter="url(#glow)" />
+                <line x1="0" y1="50" x2="100" y2="50" stroke="#00ffff" stroke-width="0.5" filter="url(#glow)" />
+                <line x1="50" y1="0" x2="50" y2="100" stroke="#00ffff" stroke-width="0.5" filter="url(#glow)" />
+                <circle cx="50" cy="50" r="20" fill="none" stroke="#ff00ff" stroke-width="1" filter="url(#glow)" />
+            </symbol>
+            <symbol id="pulse-wave" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="10" fill="#00ffff" filter="url(#glow)" />
+                <circle cx="50" cy="50" r="20" fill="none" stroke="#00ffff" stroke-width="0.5" filter="url(#glow)" class="pulse" />
+                <circle cx="50" cy="50" r="30" fill="none" stroke="#00ffff" stroke-width="0.3" filter="url(#glow)" class="pulse" style="animation-delay: 0.5s" />
+            </symbol>
+        </defs>
+    </svg>
+
+    <!-- 页面1: 启动页 -->
+    <div class="w-[375px] h-[812px] border border-cyan-400 rounded-2xl overflow-hidden relative matrix-bg grid-bg shadow-lg shadow-cyan-500/30">
+        <canvas id="matrix-canvas"></canvas>
+        <div class="scan-line"></div>
+        <div class="scanlines"></div>
+        
+        <div class="absolute inset-0 flex flex-col items-center justify-center z-10 p-8">
+            <svg class="w-32 h-32 mb-8 float" viewBox="0 0 100 100">
+                <use href="#cyber-grid" />
+            </svg>
+            
+            <h1 class="text-4xl font-bold text-cyan-400 text-glow-cyan glitch-effect mb-2" data-text="NEON">NEON</h1>
+            <h2 class="text-2xl text-pink-500 text-glow-pink glitch-effect mb-10" data-text="SYSTEM">SYSTEM</h2>
+            
+            <div class="w-full max-w-xs">
+                <div class="h-1 bg-cyan-400 rounded-full mb-2">
+                    <div class="h-full w-1/2 bg-cyan-300 rounded-full border-glow-cyan"></div>
+                </div>
+                <p class="text-xs text-cyan-400 text-right">LOADING...</p>
+            </div>
+            
+            <div class="mt-12 text-xs text-gray-400">
+                <p>© 2077 NEON CORPORATION</p>
+                <p class="mt-1">CONNECTING TO CYBERSPACE...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页面2: 主界面 -->
+    <div class="w-[375px] h-[812px] border border-cyan-400 rounded-2xl overflow-hidden relative matrix-bg grid-bg flex flex-col">
+        <canvas id="matrix-canvas2"></canvas>
+        <div class="scan-line"></div>
+        <div class="scanlines"></div>
+        
+        <!-- 状态栏 -->
+        <div class="px-4 py-2 flex justify-between items-center bg-black/50 backdrop-blur-sm z-20">
+            <span class="text-cyan-400 text-glow-green">09:41</span>
+            <div class="flex items-center gap-1">
+                <i class="fa fa-signal text-cyan-400 text-glow-green"></i>
+                <i class="fa fa-wifi text-cyan-400 text-glow-green"></i>
+                <i class="fa fa-battery-full text-cyan-400 text-glow-green"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="flex-1 overflow-y-auto p-4 z-10">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-cyan-400 text-glow-cyan">DASHBOARD</h1>
+                <p class="text-pink-500 text-glow-pink text-sm">USER ID: NEON-2077-456</p>
+            </div>
+            
+            <!-- 数据卡片 -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-gray-900/70 backdrop-blur-sm p-4 rounded border border-cyan-500/50 card-glow breathing hover:scale-105 transition-transform">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs text-gray-400">STATS</span>
+                        <i class="fa fa-refresh text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-cyan-400 text-glow-cyan">89%</h3>
+                    <p class="text-xs text-gray-400">SYSTEM EFFICIENCY</p>
+                </div>
+                
+                <div class="bg-gray-900/70 backdrop-blur-sm p-4 rounded border border-pink-500/50 card-glow breathing hover:scale-105 transition-transform">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs text-gray-400">ALERTS</span>
+                        <i class="fa fa-exclamation-triangle text-pink-500"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-pink-500 text-glow-pink">3</h3>
+                    <p class="text-xs text-gray-400">ACTIVE THREATS</p>
+                </div>
+            </div>
+            
+            <!-- 主要数据面板 -->
+            <div class="bg-gray-900/70 backdrop-blur-sm p-4 rounded border border-cyan-500/50 card-glow mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-cyan-400 text-glow-cyan">NETWORK STATUS</h3>
+                    <span class="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded border border-green-500/50">ONLINE</span>
+                </div>
+                
+                <div class="h-40 relative overflow-hidden">
+                    <svg class="w-full h-full" viewBox="0 0 300 150">
+                        <path d="M0,75 Q50,50 100,80 T150,60 T200,90 T250,50 T300,75" fill="none" stroke="#00ffff" stroke-width="2" filter="url(#glow)" />
+                        <path d="M0,100 Q50,80 100,110 T150,90 T200,120 T250,80 T300,100" fill="none" stroke="#ff00ff" stroke-width="1" filter="url(#glow)" />
+                    </svg>
+                    
+                    <div class="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-gray-900/90 to-transparent"></div>
+                </div>
+                
+                <div class="mt-4 flex justify-between text-xs">
+                    <span class="text-gray-400">LATENCY: 12ms</span>
+                    <span class="text-gray-400">PACKETS: 1.2M/s</span>
+                </div>
+            </div>
+            
+            <!-- 快速访问 -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-cyan-400 text-glow-cyan mb-4">QUICK ACCESS</h3>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="bg-gray-900/70 backdrop-blur-sm aspect-square rounded border border-cyan-500/50 flex flex-col items-center justify-center neon-btn hover:scale-110 transition-transform">
+                        <i class="fa fa-database text-xl text-cyan-400 mb-2"></i>
+                        <span class="text-xs">DATA</span>
+                    </div>
+                    <div class="bg-gray-900/70 backdrop-blur-sm aspect-square rounded border border-pink-500/50 flex flex-col items-center justify-center neon-btn hover:scale-110 transition-transform">
+                        <i class="fa fa-shield text-xl text-pink-500 mb-2"></i>
+                        <span class="text-xs">SECURITY</span>
+                    </div>
+                    <div class="bg-gray-900/70 backdrop-blur-sm aspect-square rounded border border-green-500/50 flex flex-col items-center justify-center neon-btn hover:scale-110 transition-transform">
+                        <i class="fa fa-cogs text-xl text-green-400 mb-2"></i>
+                        <span class="text-xs">SYSTEM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="bg-gray-900/90 backdrop-blur-md border-t border-cyan-500/50 z-20">
+            <div class="flex justify-around">
+                <button class="flex flex-col items-center py-3 px-4 text-cyan-400 border-t-2 border-cyan-400">
+                    <i class="fa fa-home text-lg"></i>
+                    <span class="text-xs mt-1">HOME</span>
+                </button>
+                <button class="flex flex-col items-center py-3 px-4 text-gray-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa fa-line-chart text-lg"></i>
+                    <span class="text-xs mt-1">ANALYTICS</span>
+                </button>
+                <button class="flex flex-col items-center py-3 px-4 text-gray-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa fa-map text-lg"></i>
+                    <span class="text-xs mt-1">MAP</span>
+                </button>
+                <button class="flex flex-col items-center py-3 px-4 text-gray-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa fa-user text-lg"></i>
+                    <span class="text-xs mt-1">PROFILE</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页面3: 数据分析界面 -->
+    <div class="w-[375px] h-[812px] border border-cyan-400 rounded-2xl overflow-hidden relative matrix-bg grid-bg flex flex-col">
+        <canvas id="matrix-canvas3"></canvas>
+        <div class="scan-line"></div>
+        <div class="scanlines"></div>
+        
+        <!-- 状态栏 -->
+        <div class="px-4 py-2 flex justify-between items-center bg-black/50 backdrop-blur-sm z-20">
+            <span class="text-cyan-400 text-glow-green">09:45</span>
+            <div class="flex items-center gap-1">
+                <i class="fa fa-signal text-cyan-400 text-glow-green"></i>
+                <i class="fa fa-wifi text-cyan-400 text-glow-green"></i>
+                <i class="fa fa-battery-three-quarters text-cyan-400 text-glow-green"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="flex-1 overflow-y-auto p-4 z-10">
+            <div class="mb-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-2xl font-bold text-cyan-400 text-glow-cyan">ANALYTICS</h1>
+                        <p class="text-pink-500 text-glow-pink text-sm">DATA VISUALIZATION</p>
+                    </div>
+                    <div class="bg-gray-900/70 backdrop-blur-sm px-3 py-1 rounded border border-cyan-500/50 neon-btn">
+                        <span class="text-xs">REFRESH</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 数据概览卡片 -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-gray-900/70 backdrop-blur-sm p-4 rounded border border-cyan-500/50 card-glow breathing">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs text-gray-400">UPTIME</span>
+                        <svg class="w-6 h-6" viewBox="0 0 100 100">
+                            <use href="#pulse-wave" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-cyan-400 text-glow-cyan">168h</h3>
+                    <p class="text-xs text-gray-400">7 DAYS</p>
+                </div>
+                
+                <div class="bg-gray-900/70 backdrop-blur-sm p-4 rounded border border-pink-500/50 card-glow breathing">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs text-gray-400">STORAGE</span>
+                        <i class="fa fa-hdd-o text-pink-500"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-pink-500 text-glow-pink">68%</h3>
+                    <p class="text-xs text-gray-400">420GB / 620GB</p>
+                </div>
+            </div>
+            
+            <!-- 主要图表区域 -->
+            <div class="bg-gray-900/70 backdrop-blur-sm p-4 rounded border border-cyan-500/50 card-glow mb-6">
+                <h3 class="text-lg font-bold text-cyan-400 text-glow-cyan mb-4">NETWORK TRAFFIC</h3>
+                
+                <div class="h-60 relative">
+                    <!-- 柱状图 -->
+                    <div class="absolute bottom-0 left-0 w-full h-full flex justify-around items-end">
+                        <div class="w-8 bg-cyan-500/80 rounded-t h-[60%] border-glow-cyan"></div>
+                        <div class="w-8 bg-pink-500/80 rounded-t h-[40%] border-glow-pink"></div>
+                        <div class="w-8 bg-cyan-500/80 rounded-t h-[75%] border-glow-cyan"></div>
+                        <div class="w-8 bg-pink-500/80 rounded-t h-[30%] border-glow-pink"></div>
+                        <div class="w-8 bg-cyan-500/80 rounded-t h-[90%] border-glow-cyan"></div>
+                        <div class="w-8 bg-pink-500/80 rounded-t h-[50%] border-glow-pink"></div>
+                    </div>
+                    
+                    <!-- 网格背景 -->
+                    <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+                    
+                    <!-- 渐变遮罩 -->
+                    <div class="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+                </div>
+                
+                <div class="mt-4 flex justify-between text-xs">
+                    <div class="flex items-center gap-1">
+                        <span class="w-3 h-3 bg-cyan-400"></span>
+                        <span class="text-gray-400">INCOMING</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span class="w-3 h-3 bg-pink-400"></span>
+                        <span class="text-gray-400">OUTGOING</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 数据流展示 -->
+            <div class="bg-gray-900/70 backdrop-blur-sm p-4 rounded border border-cyan-500/50 card-glow mb-6">
+                <h3 class="text-lg font-bold text-cyan-400 text-glow-cyan mb-4">DATA STREAM</h3>
+                
+                <div class="h-40 overflow-hidden">
+                    <div class="data-flow">
+                        <div class="flex justify-between text-xs mb-2">
+                            <span class="text-gray-400">NODE-01</span>
+                            <span class="text-green-400">ONLINE</span>
+                            <span class="text-cyan-400">192.168.1.101</span>
+                        </div>
+                        <div class="flex justify-between text-xs mb-2">
+                            <span class="text-gray-400">NODE-02</span>
+                            <span class="text-green-400">ONLINE</span>
+                            <span class="text-cyan-400">192.168.1.102</span>
+                        </div>
+                        <div class="flex justify-between text-xs mb-2">
+                            <span class="text-gray-400">NODE-03</span>
+                            <span class="text-red-400">OFFLINE</span>
+                            <span class="text-cyan-400">192.168.1.103</span>
+                        </div>
+                        <div class="flex justify-between text-xs mb-2">
+                            <span class="text-gray-400">NODE-04</span>
+                            <span class="text-green-400">ONLINE</span>
+                            <span class="text-cyan-400">192.168.1.104</span>
+                        </div>
+                        <div class="flex justify-between text-xs mb-2">
+                            <span class="text-gray-400">NODE-05</span>
+                            <span class="text-yellow-400">WARNING</span>
+                            <span class="text-cyan-400">192.168.1.105</span>
+                        </div>
+                        <!-- 重复数据以实现滚动效果 -->
+                        <div class="flex justify-between text-xs mb-2">
+                            <span class="text-gray-400">NODE-01</span>
+                            <span class="text-green-400">ONLINE</span>
+                            <span class="text-cyan-400">192.168.1.101</span>
+                        </div>
+                        <div class="flex justify-between text-xs mb-2">
+                            <span class="text-gray-400">NODE-02</span>
+                            <span class="text-green-400">ONLINE</span>
+                            <span class="text-cyan-400">192.168.1.102</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-2 text-xs text-gray-400">
+                    <p>LAST UPDATE: 09:42:17</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="bg-gray-900/90 backdrop-blur-md border-t border-cyan-500/50 z-20">
+            <div class="flex justify-around">
+                <button class="flex flex-col items-center py-3 px-4 text-gray-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa fa-home text-lg"></i>
+                    <span class="text-xs mt-1">HOME</span>
+                </button>
+                <button class="flex flex-col items-center py-3 px-4 text-cyan-400 border-t-2 border-cyan-400">
+                    <i class="fa fa-line-chart text-lg"></i>
+                    <span class="text-xs mt-1">ANALYTICS</span>
+                </button>
+                <button class="flex flex-col items-center py-3 px-4 text-gray-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa fa-map text-lg"></i>
+                    <span class="text-xs mt-1">MAP</span>
+                </button>
+                <button class="flex flex-col items-center py-3 px-4 text-gray-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa fa-user text-lg"></i>
+                    <span class="text-xs mt-1">PROFILE</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页面4: 个人中心 -->
+    <div class="w-[375px] h-[812px] border border-cyan-400 rounded-2xl overflow-hidden relative matrix-bg grid-bg flex flex-col">
+        <canvas id="matrix-canvas4"></canvas>
+        <div class="scan-line"></div>
+        <div class="scanlines"></div>
+        
+        <!-- 状态栏 -->
+        <div class="px-4 py-2 flex justify-between items-center bg-black/50 backdrop-blur-sm z-20">
+            <span class="text-cyan-400 text-glow-green">09:50</span>
+            <div class="flex items-center gap-1">
+                <i class="fa fa-signal text-cyan-400 text-glow-green"></i>
+                <i class="fa fa-wifi text-cyan-400 text-glow-green"></i>
+                <i class="fa fa-battery-half text-cyan-400 text-glow-green"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="flex-1 overflow-y-auto p-4 z-10">
+            <!-- 用户信息 -->
+            <div class="mb-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 rounded-full border-2 border-cyan-400 border-glow-cyan overflow-hidden flex items-center justify-center bg-gray-800">
+                        <span class="text-2xl font-bold text-cyan-400">JD</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-cyan-400 text-glow-cyan">JOHN DOE</h1>
+                        <p class="text-pink-500 text-glow-pink text-sm">CYBERNETIC OPERATOR</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="bg-gray-900/70 backdrop-blur-sm p-3 rounded border border-cyan-500/50">
+                        <h3 class="text-lg font-bold text-cyan-400">142</h3>
+                        <p class="text-xs text-gray-400">MISSIONS</p>
+                    </div>
+                    <div class="bg-gray-900/70 backdrop-blur-sm p-3 rounded border border-pink-500/50">
+                        <h3 class="text-lg font-bold text-pink-500">98%</h3>
+                        <p class="text-xs text-gray-400">EFFICIENCY</p>
+                    </div>
+                    <div class="bg-gray-900/70 backdrop-blur-sm p-3 rounded border border-green-500/50">
+                        <h3 class="text-lg font-bold text-green-400">2077</h3>
+                        <p class="text-xs text-gray-400">REPUTATION</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 账户状态 -->
+            <div class="bg-gray-900/70 backdrop-blur-sm p-4 rounded border border-cyan-500/50 card-glow mb-6">
+                <h3 class="text-lg font-bold text-cyan-400 text-glow-cyan mb-4">ACCOUNT STATUS</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-gray-400">SECURITY CLEARANCE</span>
+                            <span class="text-green-400">LEVEL 5</span>
+                        </div>
+                        <div class="h-1.5 bg-gray-700 rounded-full">
+                            <div class="h-full w-5/6 bg-green-400 rounded-full border-glow-cyan"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-gray-400">STORAGE ALLOCATION</span>
+                            <span class="text-cyan-400">68%</span>
+                        </div>
+                        <div class="h-1.5 bg-gray-700 rounded-full">
+                            <div class="h-full w-2/3 bg-cyan-400 rounded-full border-glow-cyan"></div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-gray-400">BANDWIDTH USAGE</span>
+                            <span class="text-yellow-400">82%</span>
+                        </div>
+                        <div class="h-1.5 bg-gray-700 rounded-full">
+                            <div class="h-full w-4/5 bg-yellow-400 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 设置选项 -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-cyan-400 text-glow-cyan mb-4">SETTINGS</h3>
+                
+                <div class="space-y-2">
+                    <div class="bg-gray-900/70 backdrop-blur-sm p-3 rounded border border-cyan-500/50 flex justify-between items-center neon-btn">
+                        <div class="flex items-center gap-3">
+                            <i class="fa fa-user text-cyan-400"></i>
+                            <span>PROFILE</span>
+                        </div>
+                        <i class="fa fa-chevron-right text-xs text-gray-400"></i>
+                    </div>
+                    
+                    <div class="bg-gray-900/70 backdrop-blur-sm p-3 rounded border border-cyan-500/50 flex justify-between items-center neon-btn">
+                        <div class="flex items-center gap-3">
+                            <i class="fa fa-lock text-cyan-400"></i>
+                            <span>SECURITY</span>
+                        </div>
+                        <i class="fa fa-chevron-right text-xs text-gray-400"></i>
+                    </div>
+                    
+                    <div class="bg-gray-900/70 backdrop-blur-sm p-3 rounded border border-cyan-500/50 flex justify-between items-center neon-btn">
+                        <div class="flex items-center gap-3">
+                            <i class="fa fa-cog text-cyan-400"></i>
+                            <span>SETTINGS</span>
+                        </div>
+                        <i class="fa fa-chevron-right text-xs text-gray-400"></i>
+                    </div>
+                    
+                    <div class="bg-gray-900/70 backdrop-blur-sm p-3 rounded border border-cyan-500/50 flex justify-between items-center neon-btn">
+                        <div class="flex items-center gap-3">
+                            <i class="fa fa-question-circle text-cyan-400"></i>
+                            <span>SUPPORT</span>
+                        </div>
+                        <i class="fa fa-chevron-right text-xs text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 登出按钮 -->
+            <div class="mt-8">
+                <button class="w-full py-3 bg-red-900/30 backdrop-blur-sm rounded border border-red-500/50 text-red-400 hover:bg-red-900/50 transition-colors neon-btn">
+                    <i class="fa fa-sign-out mr-2"></i>LOGOUT
+                </button>
+            </div>
+            
+            <div class="mt-8 text-center text-xs text-gray-500">
+                <p>SYSTEM VERSION: 7.7.7</p>
+                <p class="mt-1">© 2077 NEON CORPORATION</p>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="bg-gray-900/90 backdrop-blur-md border-t border-cyan-500/50 z-20">
+            <div class="flex justify-around">
+                <button class="flex flex-col items-center py-3 px-4 text-gray-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa fa-home text-lg"></i>
+                    <span class="text-xs mt-1">HOME</span>
+                </button>
+                <button class="flex flex-col items-center py-3 px-4 text-gray-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa fa-line-chart text-lg"></i>
+                    <span class="text-xs mt-1">ANALYTICS</span>
+                </button>
+                <button class="flex flex-col items-center py-3 px-4 text-gray-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa fa-map text-lg"></i>
+                    <span class="text-xs mt-1">MAP</span>
+                </button>
+                <button class="flex flex-col items-center py-3 px-4 text-cyan-400 border-t-2 border-cyan-400">
+                    <i class="fa fa-user text-lg"></i>
+                    <span class="text-xs mt-1">PROFILE</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页面5: 目标设定流程 -->
+    <div class="w-[375px] h-[812px] border border-cyan-400 rounded-2xl overflow-hidden relative matrix-bg grid-bg">
+        <canvas id="matrix-canvas5"></canvas>
+        <div class="scan-line"></div>
+        <div class="scanlines"></div>
+        
+        <!-- 状态栏 -->
+        <div class="px-4 py-2 flex justify-between items-center bg-black/50 backdrop-blur-sm z-20">
+            <span class="text-cyan-400 text-glow-green">10:00</span>
+            <div class="flex items-center gap-1">
+                <i class="fa fa-signal text-cyan-400 text-glow-green"></i>
+                <i class="fa fa-wifi text-cyan-400 text-glow-green"></i>
+                <i class="fa fa-battery-full text-cyan-400 text-glow-green"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center p-8 z-10">
+            <div class="w-full max-w-xs">
+                <div class="mb-8 flex justify-center">
+                    <div class="relative">
+                        <div class="w-20 h-20 rounded-full border-2 border-cyan-400 border-glow-cyan flex items-center justify-center breathing">
+                            <span class="text-2xl font-bold">3/4</span>
+                        </div>
+                        <div class="absolute -top-1 -right-1 w-6 h-6 bg-pink-500 rounded-full flex items-center justify-center text-xs">
+                            <i class="fa fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <h1 class="text-2xl font-bold text-cyan-400 text-glow-cyan mb-2 text-center">MISSION SETUP</h1>
+                <p class="text-pink-500 text-glow-pink text-sm mb-8 text-center">TARGET CONFIGURATION</p>
+                
+                <!-- 进度指示器 -->
+                <div class="flex justify-between mb-8">
+                    <div class="w-3 h-3 rounded-full bg-cyan-400 border-glow-cyan"></div>
+                    <div class="w-3 h-3 rounded-full bg-cyan-400 border-glow-cyan"></div>
+                    <div class="w-3 h-3 rounded-full bg-pink-500 border-glow-pink breathing"></div>
+                    <div class="w-3 h-3 rounded-full bg-gray-700"></div>
+                </div>
+                
+                <!-- 表单 -->
+                <div class="space-y-4 mb-8">
+                    <div>
+                        <label class="text-xs text-gray-400 mb-1 block">TARGET ID</label>
+                        <input type="text" class="w-full bg-gray-900/70 backdrop-blur-sm border border-cyan-500/50 rounded px-3 py-2 text-cyan-400 focus:outline-none focus:border-cyan-400 focus:border-glow-cyan" value="TARGET-7391" readonly>
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs text-gray-400 mb-1 block">MISSION TYPE</label>
+                        <select class="w-full bg-gray-900/70 backdrop-blur-sm border border-cyan-500/50 rounded px-3 py-2 text-cyan-400 focus:outline-none focus:border-cyan-400 focus:border-glow-cyan">
+                            <option>INFILTRATION</option>
+                            <option>DATA_EXTRACTION</option>
+                            <option selected>SURVEILLANCE</option>
+                            <option>ELIMINATION</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs text-gray-400 mb-1 block">DURATION</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button class="bg-gray-900/70 backdrop-blur-sm border border-cyan-500/50 rounded px-3 py-2 text-center hover:bg-cyan-900/30 transition-colors">24h</button>
+                            <button class="bg-cyan-900/30 backdrop-blur-sm border border-cyan-400 rounded px-3 py-2 text-center border-glow-cyan">72h</button>
+                            <button class="bg-gray-900/70 backdrop-blur-sm border border-cyan-500/50 rounded px-3 py-2 text-center hover:bg-cyan-900/30 transition-colors">168h</button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs text-gray-400 mb-1 block">PRIORITY</label>
+                        <div class="flex items-center gap-3">
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="priority" class="accent-cyan-400">
+                                <span class="text-xs">LOW</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="priority" class="accent-cyan-400" checked>
+                                <span class="text-xs">MEDIUM</span>
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="priority" class="accent-cyan-400">
+                                <span class="text-xs">HIGH</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 按钮 -->
+                <div class="flex gap-3">
+                    <button class="flex-1 py-3 bg-gray-900/70 backdrop-blur-sm rounded border border-gray-700 text-gray-400 hover:border-cyan-500 hover:text-cyan-400 transition-colors neon-btn">
+                        <i class="fa fa-arrow-left mr-2"></i>BACK
+                    </button>
+                    <button class="flex-1 py-3 bg-cyan-900/30 backdrop-blur-sm rounded border border-cyan-400 text-cyan-400 hover:bg-cyan-900/50 transition-colors neon-btn breathing">
+                        NEXT<i class="fa fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页面6: 地图界面 -->
+    <div class="w-[375px] h-[812px] border border-cyan-400 rounded-2xl overflow-hidden relative matrix-bg grid-bg flex flex-col">
+        <canvas id="matrix-canvas6"></canvas>
+        <div class="scan-line"></div>
+        <div class="scanlines"></div>
+        
+        <!-- 状态栏 -->
+        <div class="px-4 py-2 flex justify-between items-center bg-black/50 backdrop-blur-sm z-20">
+            <span class="text-cyan-400 text-glow-green">10:15</span>
+            <div class="flex items-center gap-1">
+                <i class="fa fa-signal text-cyan-400 text-glow-green"></i>
+                <i class="fa fa-wifi text-cyan-400 text-glow-green"></i>
+                <i class="fa fa-battery-three-quarters text-cyan-400 text-glow-green"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="flex-1 overflow-hidden relative z-10">
+            <!-- 地图背景 -->
+            <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm">
+                <!-- 地图网格 -->
+                <div class="absolute inset-0" style="background-image: url('https://picsum.photos/id/1015/800/1200'); background-size: cover; opacity: 0.2;"></div>
+                
+                <!-- 地图覆盖层 -->
+                <div class="absolute inset-0 grid-bg"></div>
+                
+                <!-- 地图标记 -->
+                <div class="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <div class="w-6 h-6 rounded-full bg-pink-500 border-glow-pink flex items-center justify-center breathing">
+                        <i class="fa fa-crosshairs text-xs"></i>
+                    </div>
+                </div>
+                
+                <div class="absolute top-1/4 left-1/3">
+                    <div class="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
+                        <i class="fa fa-check text-xs"></i>
+                    </div>
+                </div>
+                
+                <div class="absolute bottom-1/3 right-1/4">
+                    <div class="w-4 h-4 rounded-full bg-yellow-500 flex items-center justify-center breathing">
+                        <i class="fa fa-exclamation text-xs"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 控制面板 -->
+            <div class="absolute bottom-0 left-0 right-0 bg-gray-900/80 backdrop-blur-md border-t border-cyan-500/50 p-4">
+                <h3 class="text-lg font-bold text-cyan-400 text-glow-cyan mb-3">TARGET LOCATION</h3>
+                
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <p class="text-xs text-gray-400 mb-1">COORDINATES</p>
+                        <p class="text-cyan-400">40.7128° N, 74.0060° W</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400 mb-1">SECTOR</p>
+                        <p class="text-cyan-400">MANHATTAN-07</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <p class="text-xs text-gray-400 mb-1">DESCRIPTION</p>
+                    <p class="text-sm">HIGH-SECURITY RESEARCH FACILITY<br>CYBERNETIC DEVELOPMENT LAB</p>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button class="flex-1 py-2 bg-gray-900/70 backdrop-blur-sm rounded border border-gray-700 text-gray-400 hover:border-cyan-500 hover:text-cyan-400 transition-colors neon-btn">
+                        <i class="fa fa-info-circle mr-1"></i>DETAILS
+                    </button>
+                    <button class="flex-1 py-2 bg-pink-900/30 backdrop-blur-sm rounded border border-pink-400 text-pink-400 hover:bg-pink-900/50 transition-colors neon-btn breathing">
+                        <i class="fa fa-map-marker mr-1"></i>NAVIGATE
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 地图控制按钮 -->
+            <div class="absolute top-4 right-4 flex flex-col gap-2">
+                <button class="w-8 h-8 bg-gray-900/70 backdrop-blur-sm rounded border border-cyan-500/50 flex items-center justify-center neon-btn">
+                    <i class="fa fa-plus text-xs"></i>
+                </button>
+                <button class="w-8 h-8 bg-gray-900/70 backdrop-blur-sm rounded border border-cyan-500/50 flex items-center justify-center neon-btn">
+                    <i class="fa fa-minus text-xs"></i>
+                </button>
+                <button class="w-8 h-8 bg-cyan-900/30 backdrop-blur-sm rounded border border-cyan-400 flex items-center justify-center neon-btn breathing">
+                    <i class="fa fa-location-arrow text-xs"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="bg-gray-900/90 backdrop-blur-md border-t border-cyan-500/50 z-20">
+            <div class="flex justify-around">
+                <button class="flex flex-col items-center py-3 px-4 text-gray-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa fa-home text-lg"></i>
+                    <span class="text-xs mt-1">HOME</span>
+                </button>
+                <button class="flex flex-col items-center py-3 px-4 text-gray-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa fa-line-chart text-lg"></i>
+                    <span class="text-xs mt-1">ANALYTICS</span>
+                </button>
+                <button class="flex flex-col items-center py-3 px-4 text-cyan-400 border-t-2 border-cyan-400">
+                    <i class="fa fa-map text-lg"></i>
+                    <span class="text-xs mt-1">MAP</span>
+                </button>
+                <button class="flex flex-col items-center py-3 px-4 text-gray-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa fa-user text-lg"></i>
+                    <span class="text-xs mt-1">PROFILE</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 矩阵数字雨效果脚本 -->
+    <script>
+        // 矩阵数字雨效果
+        function createMatrixEffect(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = canvas.offsetWidth;
+            const height = canvas.height = canvas.offsetHeight;
+            
+            // 字符集
+            const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヰヱヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            
+            // 列数
+            const columns = Math.floor(width / 20);
+            const drops = [];
+            
+            // 初始化雨滴位置
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.floor(Math.random() * height);
+            }
+            
+            function draw() {
+                // 半透明背景
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, width, height);
+                
+                // 设置字符样式
+                ctx.fillStyle = '#00ffff';
+                ctx.font = '15px monospace';
+                
+                // 绘制字符
+                for (let i = 0; i < drops.length; i++) {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    ctx.fillText(text, i * 20, drops[i] * 20);
+                    
+                    // 重置雨滴位置
+                    if (drops[i] * 20 > height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    
+                    // 下落
+                    drops[i]++;
+                }
+            }
+            
+            setInterval(draw, 35);
+        }
+        
+        // 为所有矩阵画布创建效果
+        document.addEventListener('DOMContentLoaded', function() {
+            createMatrixEffect('matrix-canvas');
+            createMatrixEffect('matrix-canvas2');
+            createMatrixEffect('matrix-canvas3');
+            createMatrixEffect('matrix-canvas4');
+            createMatrixEffect('matrix-canvas5');
+            createMatrixEffect('matrix-canvas6');
+            
+            // 故障效果随机触发
+            setInterval(() => {
+                const glitchElements = document.querySelectorAll('.glitch-effect');
+                glitchElements.forEach(el => {
+                    if (Math.random() > 0.7) {
+                        el.classList.add('glitch');
+                        setTimeout(() => el.classList.remove('glitch'), 200);
+                    }
+                });
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

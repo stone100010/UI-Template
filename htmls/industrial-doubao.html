@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工业风格UI模板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Rajdhani', 'Source Code Pro', sans-serif; }
+        .metal-bg { background: linear-gradient(145deg, #444444, #2f2f2f); }
+        .metal-surface { background: linear-gradient(135deg, #3a3a3a, #2a2a2a); }
+        .metal-card { 
+            background: linear-gradient(145deg, #383838, #2b2b2b);
+            border: 1px solid #444;
+            box-shadow: 3px 3px 8px #1a1a1a, -3px -3px 8px #444444;
+        }
+        .metal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 5px 5px 12px #1a1a1a, -5px -5px 12px #4a4a4a;
+            filter: brightness(1.1);
+        }
+        .metal-button {
+            background: linear-gradient(145deg, #ff6600, #e05a00);
+            box-shadow: 3px 3px 6px #1a1a1a, -1px -1px 4px #444444;
+        }
+        .metal-button:hover {
+            background: linear-gradient(145deg, #ff771a, #ff6600);
+            box-shadow: 4px 4px 8px #1a1a1a, -2px -2px 6px #444444;
+            transform: translateY(-2px);
+        }
+        .rivet {
+            width: 8px;
+            height: 8px;
+            background: #666;
+            border-radius: 50%;
+            box-shadow: inset 1px 1px 2px #444, inset -1px -1px 2px #888;
+        }
+        .pipe {
+            height: 4px;
+            background: linear-gradient(90deg, #444, #555, #444);
+            border-radius: 2px;
+            box-shadow: inset 0 1px 1px #666, inset 0 -1px 1px #333;
+        }
+    </style>
+</head>
+<body class="bg-[#2F2F2F] text-[#C0C0C0] flex flex-wrap justify-center gap-4 p-8">
+    <!-- SVG Symbol定义 -->
+    <svg width="0" height="0" class="hidden">
+        <symbol id="icon-dashboard" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+        </symbol>
+        <symbol id="icon-equipment" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M17 18H7V6h10v12zm0-14H7c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM5 6h14v12H5V6z"/>
+        </symbol>
+        <symbol id="icon-analytics" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99l1.5 1.5z"/>
+        </symbol>
+        <symbol id="icon-settings" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L.79 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+        </symbol>
+        <symbol id="icon-notification" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+        </symbol>
+    </svg>
+
+    <!-- 仪表盘页面 -->
+    <div class="w-[375px] h-[812px] border border-[#444] rounded-xl overflow-hidden relative metal-bg flex flex-col">
+        <!-- 状态栏 -->
+        <div class="h-12 px-4 flex justify-between items-center metal-surface border-b border-[#444]">
+            <div class="text-sm font-mono">08:42</div>
+            <div class="flex items-center gap-2">
+                <i class="fa fa-signal text-[#C0C0C0]"></i>
+                <i class="fa fa-wifi text-[#C0C0C0]"></i>
+                <i class="fa fa-battery-three-quarters text-[#C0C0C0]"></i>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="flex-1 overflow-y-auto p-4">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-[#FF6600] text-2xl font-bold">工业监控</h1>
+                    <p class="text-sm text-[#999]">生产线实时数据</p>
+                </div>
+                <div class="rivet"></div>
+            </div>
+            
+            <!-- 状态概览卡片 -->
+            <div class="metal-card rounded-lg p-4 mb-6 relative">
+                <div class="absolute top-2 left-2 rivet"></div>
+                <div class="absolute top-2 right-2 rivet"></div>
+                <div class="absolute bottom-2 left-2 rivet"></div>
+                <div class="absolute bottom-2 right-2 rivet"></div>
+                
+                <h2 class="text-lg font-semibold mb-3">设备状态</h2>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-[#FF6600]">98%</div>
+                        <div class="text-xs text-[#999]">运行中</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-green-500">2</div>
+                        <div class="text-xs text-[#999]">待机中</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-red-500">0</div>
+                        <div class="text-xs text-[#999]">故障</div>
+                    </div>
+                </div>
+                <div class="mt-4 pipe w-full"></div>
+            </div>
+            
+            <!-- 图表区域 -->
+            <div class="metal-card rounded-lg p-4 mb-6">
+                <h2 class="text-lg font-semibold mb-4">生产效率趋势</h2>
+                <div class="h-48">
+                    <canvas id="efficiencyChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- 设备列表 -->
+            <div class="metal-card rounded-lg p-4">
+                <h2 class="text-lg font-semibold mb-4">设备监控</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-2 rounded border border-[#444]">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">
+                                <i class="fa fa-machine"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">冲压机 #01</div>
+                                <div class="text-xs text-[#999]">运行中 · 98.7%</div>
+                            </div>
+                        </div>
+                        <div class="text-[#FF6600]"><i class="fa fa-chevron-right"></i></div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-2 rounded border border-[#444]">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">
+                                <i class="fa fa-cogs"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">装配线 #02</div>
+                                <div class="text-xs text-[#999]">运行中 · 95.3%</div>
+                            </div>
+                        </div>
+                        <div class="text-[#FF6600]"><i class="fa fa-chevron-right"></i></div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-2 rounded border border-[#444]">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-500">
+                                <i class="fa fa-industry"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium">包装机 #03</div>
+                                <div class="text-xs text-[#999]">待机中 · 100%</div>
+                            </div>
+                        </div>
+                        <div class="text-[#FF6600]"><i class="fa fa-chevron-right"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <div class="h-16 metal-surface border-t border-[#444] flex justify-around items-center">
+            <div class="flex flex-col items-center text-[#FF6600]">
+                <svg class="w-6 h-6"><use href="#icon-dashboard"></use></svg>
+                <span class="text-xs mt-1">仪表盘</span>
+            </div>
+            <div class="flex flex-col items-center text-[#999]">
+                <svg class="w-6 h-6"><use href="#icon-equipment"></use></svg>
+                <span class="text-xs mt-1">设备</span>
+            </div>
+            <div class="flex flex-col items-center text-[#999]">
+                <svg class="w-6 h-6"><use href="#icon-analytics"></use></svg>
+                <span class="text-xs mt-1">分析</span>
+            </div>
+            <div class="flex flex-col items-center text-[#999]">
+                <svg class="w-6 h-6"><use href="#icon-settings"></use></svg>
+                <span class="text-xs mt-1">设置</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设备详情页面 -->
+    <div class="w-[375px] h-[812px] border border-[#444] rounded-xl overflow-hidden relative metal-bg flex flex-col">
+        <!-- 状态栏 -->
+        <div class="h-12 px-4 flex justify-between items-center metal-surface border-b border-[#444]">
+            <div class="text-sm font-mono">08:45</div>
+            <div class="flex items-center gap-2">
+                <i class="fa fa-signal text-[#C0C0C0]"></i>
+                <i class="fa fa-wifi text-[#C0C0C0]"></i>
+                <i class="fa fa-battery-three-quarters text-[#C0C0C0]"></i>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="flex-1 overflow-y-auto p-4">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="text-[#FF6600]"><i class="fa fa-arrow-left"></i></div>
+                <div>
+                    <h1 class="text-xl font-bold">冲压机 #01</h1>
+                    <p class="text-sm text-[#999]">生产线A · 机械部门</p>
+                </div>
+            </div>
+            
+            <!-- 设备状态卡片 -->
+            <div class="metal-card rounded-lg p-5 mb-6 relative">
+                <div class="absolute top-3 left-3 rivet"></div>
+                <div class="absolute top-3 right-3 rivet"></div>
+                <div class="absolute bottom-3 left-3 rivet"></div>
+                <div class="absolute bottom-3 right-3 rivet"></div>
+                
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span class="px-3 py-1 bg-green-500/20 text-green-500 rounded-full text-sm">运行中</span>
+                        <p class="text-xs text-[#999] mt-1">ID: M-PRESS-001</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-bold">98.7<span class="text-lg">%</span></div>
+                        <div class="text-xs text-[#999]">效率</div>
+                    </div>
+                </div>
+                
+                <div class="pipe w-full mb-4"></div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <div class="text-sm text-[#999]">温度</div>
+                        <div class="text-xl font-semibold">42<span class="text-sm">°C</span></div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-[#999]">压力</div>
+                        <div class="text-xl font-semibold">182<span class="text-sm">bar</span></div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-[#999]">转速</div>
+                        <div class="text-xl font-semibold">1560<span class="text-sm">RPM</span></div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-[#999]">运行时长</div>
+                        <div class="text-xl font-semibold">247<span class="text-sm">h</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 实时数据图表 -->
+            <div class="metal-card rounded-lg p-4 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold">实时性能数据</h2>
+                    <select class="bg-[#333] border border-[#555] rounded px-2 py-1 text-sm">
+                        <option>今日</option>
+                        <option>本周</option>
+                        <option>本月</option>
+                    </select>
+                </div>
+                <div class="h-40">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- 操作按钮 -->
+            <div class="flex gap-3">
+                <button class="metal-button text-white rounded px-4 py-2 flex-1 font-medium flex items-center justify-center gap-2">
+                    <i class="fa fa-refresh"></i> 重启
+                </button>
+                <button class="metal-button text-white rounded px-4 py-2 flex-1 font-medium flex items-center justify-center gap-2">
+                    <i class="fa fa-cog"></i> 设置
+                </button>
+            </div>
+            
+            <!-- 维护记录 -->
+            <div class="metal-card rounded-lg p-4 mt-6">
+                <h2 class="text-lg font-semibold mb-4">最近维护记录</h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center p-2 border-b border-[#444]">
+                        <div>
+                            <div class="font-medium">定期保养</div>
+                            <div class="text-xs text-[#999]">2023-05-15 · 润滑系统</div>
+                        </div>
+                        <div class="text-[#FF6600]"><i class="fa fa-chevron-right"></i></div>
+                    </div>
+                    <div class="flex justify-between items-center p-2 border-b border-[#444]">
+                        <div>
+                            <div class="font-medium">零件更换</div>
+                            <div class="text-xs text-[#999]">2023-04-22 · 液压系统</div>
+                        </div>
+                        <div class="text-[#FF6600]"><i class="fa fa-chevron-right"></i></div>
+                    </div>
+                    <div class="flex justify-between items-center p-2">
+                        <div>
+                            <div class="font-medium">故障维修</div>
+                            <div class="text-xs text-[#999]">2023-03-08 · 传感器校准</div>
+                        </div>
+                        <div class="text-[#FF6600]"><i class="fa fa-chevron-right"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <div class="h-16 metal-surface border-t border-[#444] flex justify-around items-center">
+            <div class="flex flex-col items-center text-[#999]">
+                <svg class="w-6 h-6"><use href="#icon-dashboard"></use></svg>
+                <span class="text-xs mt-1">仪表盘</span>
+            </div>
+            <div class="flex flex-col items-center text-[#FF6600]">
+                <svg class="w-6 h-6"><use href="#icon-equipment"></use></svg>
+                <span class="text-xs mt-1">设备</span>
+            </div>
+            <div class="flex flex-col items-center text-[#999]">
+                <svg class="w-6 h-6"><use href="#icon-analytics"></use></svg>
+                <span class="text-xs mt-1">分析</span>
+            </div>
+            <div class="flex flex-col items-center text-[#999]">
+                <svg class="w-6 h-6"><use href="#icon-settings"></use></svg>
+                <span class="text-xs mt-1">设置</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数据分析页面 -->
+    <div class="w-[375px] h-[812px] border border-[#444] rounded-xl overflow-hidden relative metal-bg flex flex-col">
+        <!-- 状态栏 -->
+        <div class="h-12 px-4 flex justify-between items-center metal-surface border-b border-[#444]">
+            <div class="text-sm font-mono">08:50</div>
+            <div class="flex items-center gap-2">
+                <i class="fa fa-signal text-[#C0C0C0]"></i>
+                <i class="fa fa-wifi text-[#C0C0C0]"></i>
+                <i class="fa fa-battery-three-quarters text-[#C0C0C0]"></i>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="flex-1 overflow-y-auto p-4">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-[#FF6600] text-2xl font-bold">数据分析</h1>
+                    <p class="text-sm text-[#999]">生产效率与质量分析</p>
+                </div>
+                <div class="relative">
+                    <svg class="w-6 h-6 text-[#999]"><use href="#icon-notification"></use></svg>
+                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-[#FF6600] rounded-full flex items-center justify-center text-xs text-white">3</div>
+                </div>
+            </div>
+            
+            <!-- KPI卡片 -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="metal-card rounded-lg p-4 relative">
+                    <div class="absolute top-2 left-2 rivet"></div>
+                    <div class="absolute top-2 right-2 rivet"></div>
+                    
+                    <div class="text-sm text-[#999]">综合效率</div>
+                    <div class="text-3xl font-bold">92<span class="text-lg">%</span></div>
+                    <div class="flex items-center text-xs mt-1 text-green-500">
+                        <i class="fa fa-arrow-up mr-1"></i> 2.4%
+                    </div>
+                    <div class="mt-3 pipe w-full"></div>
+                </div>
+                
+                <div class="metal-card rounded-lg p-4 relative">
+                    <div class="absolute top-2 left-2 rivet"></div>
+                    <div class="absolute top-2 right-2 rivet"></div>
+                    
+                    <div class="text-sm text-[#999]">良品率</div>
+                    <div class="text-3xl font-bold">98<span class="text-lg">%</span></div>
+                    <div class="flex items-center text-xs mt-1 text-green-500">
+                        <i class="fa fa-arrow-up mr-1"></i> 1.2%
+                    </div>
+                    <div class="mt-3 pipe w-full"></div>
+                </div>
+            </div>
+            
+            <!-- 产量分析图表 -->
+            <div class="metal-card rounded-lg p-4 mb-6">
+                <h2 class="text-lg font-semibold mb-4">产量分析</h2>
+                <div class="h-48">
+                    <canvas id="productionChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- 质量分析卡片 -->
+            <div class="metal-card rounded-lg p-4 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold">质量指标</h2>
+                    <div class="text-[#FF6600] cursor-pointer"><i class="fa fa-ellipsis-v"></i></div>
+                </div>
+                <div class="h-40">
+                    <canvas id="qualityChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- 生产建议 -->
+            <div class="metal-card rounded-lg p-4">
+                <h2 class="text-lg font-semibold mb-3">优化建议</h2>
+                <div class="space-y-3">
+                    <div class="p-3 bg-[#333] rounded border border-[#444]">
+                        <div class="font-medium text-[#FF6600] mb-1">设备维护</div>
+                        <p class="text-sm">冲压机#01需要在20小时后进行润滑油更换</p>
+                    </div>
+                    <div class="p-3 bg-[#333] rounded border border-[#444]">
+                        <div class="font-medium text-[#FF6600] mb-1">效率提升</div>
+                        <p class="text-sm">装配线#02可以通过调整参数提升5%效率</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <div class="h-16 metal-surface border-t border-[#444] flex justify-around items-center">
+            <div class="flex flex-col items-center text-[#999]">
+                <svg class="w-6 h-6"><use href="#icon-dashboard"></use></svg>
+                <span class="text-xs mt-1">仪表盘</span>
+            </div>
+            <div class="flex flex-col items-center text-[#999]">
+                <svg class="w-6 h-6"><use href="#icon-equipment"></use></svg>
+                <span class="text-xs mt-1">设备</span>
+            </div>
+            <div class="flex flex-col items-center text-[#FF6600]">
+                <svg class="w-6 h-6"><use href="#icon-analytics"></use></svg>
+                <span class="text-xs mt-1">分析</span>
+            </div>
+            <div class="flex flex-col items-center text-[#999]">
+                <svg class="w-6 h-6"><use href="#icon-settings"></use></svg>
+                <span class="text-xs mt-1">设置</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 效率趋势图表
+        const efficiencyCtx = document.getElementById('efficiencyChart').getContext('2d');
+        new Chart(efficiencyCtx, {
+            type: 'line',
+            data: {
+                labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'],
+                datasets: [{
+                    label: '生产效率',
+                    data: [95, 97, 98, 96, 98, 97, 99],
+                    borderColor: '#FF6600',
+                    backgroundColor: 'rgba(255, 102, 0, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 90,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#C0C0C0' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#C0C0C0' }
+                    }
+                }
+            }
+        });
+
+        // 性能数据图表
+        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                labels: ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22'],
+                datasets: [
+                    {
+                        label: '温度',
+                        data: [38, 40, 42, 43, 42, 41, 40, 42, 43, 42, 41, 42],
+                        borderColor: '#FF6600',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: '压力',
+                        data: [170, 175, 180, 185, 182, 178, 175, 180, 182, 180, 178, 182],
+                        borderColor: '#4CAF50',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'top',
+                        labels: { color: '#C0C0C0' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 35,
+                        max: 45,
+                        position: 'left',
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#C0C0C0' },
+                        title: { display: true, text: '°C', color: '#FF6600' }
+                    },
+                    y1: {
+                        beginAtZero: false,
+                        min: 160,
+                        max: 190,
+                        position: 'right',
+                        grid: { display: false },
+                        ticks: { color: '#C0C0C0' },
+                        title: { display: true, text: 'bar', color: '#4CAF50' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#C0C0C0' },
+                        title: { display: true, text: '小时', color: '#C0C0C0' }
+                    }
+                }
+            }
+        });
+
+        // 产量分析图表
+        const productionCtx = document.getElementById('productionChart').getContext('2d');
+        new Chart(productionCtx, {
+            type: 'bar',
+            data: {
+                labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                datasets: [
+                    {
+                        label: '计划产量',
+                        data: [500, 550, 550, 600, 600, 400, 300],
+                        backgroundColor: 'rgba(120, 120, 120, 0.5)',
+                        borderColor: 'rgba(120, 120, 120, 0.8)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '实际产量',
+                        data: [480, 560, 540, 620, 590, 420, 290],
+                        backgroundColor: 'rgba(255, 102, 0, 0.7)',
+                        borderColor: 'rgba(255, 102, 0, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'top',
+                        labels: { color: '#C0C0C0' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: '#C0C0C0' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#C0C0C0' }
+                    }
+                }
+            }
+        });
+
+        // 质量分析图表
+        const qualityCtx = document.getElementById('qualityChart').getContext('2d');
+        new Chart(qualityCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['优质品', '合格品', '次品', '废品'],
+                datasets: [{
+                    data: [75, 20, 3, 2],
+                    backgroundColor: [
+                        '#4CAF50',
+                        '#FF6600',
+                        '#FFC107',
+                        '#F44336'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'right',
+                        labels: { color: '#C0C0C0' }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>复古怀旧风格APP UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vintage: {
+                            beige: '#F7F3E9',
+                            brown: '#8B4513',
+                            cream: '#FFF8DC',
+                            red: '#CD5C5C',
+                            gold: '#FFD700',
+                            dark: '#5D2906',
+                            light: '#F9F4E8'
+                        }
+                    },
+                    fontFamily: {
+                        vintage: ['Georgia', 'Times New Roman', 'Palatino', 'serif'],
+                        handwriting: ['Comic Sans MS', 'cursive']
+                    },
+                    boxShadow: {
+                        'vintage': '2px 2px 0px #8B4513, 4px 4px 0px rgba(0,0,0,0.1)',
+                        'vintage-hover': '3px 3px 0px #8B4513, 6px 6px 0px rgba(0,0,0,0.1)'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .texture-paper {
+                background-image: url('https://picsum.photos/id/106/1000/1000');
+                background-size: cover;
+                background-blend-mode: overlay;
+            }
+            .border-handdrawn {
+                border-image: url('https://picsum.photos/id/175/200/200') 30 stretch;
+            }
+            .animate-pulse-slow {
+                animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+            .vintage-card {
+                transition: all 0.3s ease;
+            }
+            .vintage-card:hover {
+                transform: translate(-2px, -2px) scale(1.02);
+                filter: brightness(1.05);
+            }
+            .retro-shadow {
+                box-shadow: 3px 3px 0px #8B4513;
+            }
+            .handdrawn-line {
+                height: 2px;
+                background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 2"><path d="M0,1 Q25,0 50,1 T100,1" stroke="%238B4513" fill="none" stroke-width="2"/></svg>');
+                background-repeat: repeat-x;
+                background-size: 100px 2px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-vintage flex flex-wrap justify-center gap-6 p-8">
+    <!-- SVG图标定义 -->
+    <svg width="0" height="0" class="hidden">
+        <symbol id="icon-home" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" stroke="#8B4513" stroke-width="1.5"/>
+        </symbol>
+        <symbol id="icon-record" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M18 13h-5v5h-2v-5H6v-2h5V6h2v5h5v2z" stroke="#8B4513" stroke-width="1.5"/>
+        </symbol>
+        <symbol id="icon-stats" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M3 18h3v-3h3v3h3v-3h3v3h3v-6H3v6zM7 7v3H3V7h4zM11 7v3h-4V7h4zM15 7v3h-4V7h4zM19 7v3h-4V7h4z" stroke="#8B4513" stroke-width="1.5"/>
+        </symbol>
+        <symbol id="icon-settings" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19.14 12.94c0.04-0.3 0.06-0.61 0.06-0.94 0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14 0.23-0.41 0.12-0.61l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39 0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4 2.81c-0.04-0.24-0.24-0.41-0.48-0.41h-3.84c-0.24 0-0.43 0.17-0.47 0.41L9.25 5.35C8.66 5.59 8.12 5.92 7.63 6.29L5.24 5.33c-0.22-0.08-0.47 0-0.59 0.22L2.74 8.87C2.62 9.08 2.66 9.34 2.86 9.48l2.03 1.58C4.84 11.36 4.8 11.69 4.8 12s0.02 0.64 0.07 0.94l-2.03 1.58c-0.18 0.14-0.23 0.41-0.12 0.61l1.92 3.32c0.12 0.22 0.37 0.29 0.59 0.22l2.39-0.96c0.5 0.38 1.03 0.7 1.62 0.94l0.36 2.54c0.05 0.24 0.24 0.41 0.48 0.41h3.84c0.24 0 0.44-0.17 0.47-0.41l0.36-2.54c0.59-0.24 1.13-0.56 1.62-0.94l2.39 0.96c0.22 0.08 0.47 0 0.59-0.22l1.92-3.32c0.12-0.22 0.07-0.47-0.12-0.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" stroke="#8B4513" stroke-width="1.5"/>
+        </symbol>
+    </svg>
+
+    <!-- 启动页 -->
+    <div class="w-[375px] h-[812px] bg-vintage-beige border border-vintage-brown rounded-lg relative overflow-hidden shadow-lg texture-paper">
+        <div class="absolute inset-0 flex flex-col items-center justify-center p-8">
+            <div class="mb-8 animate-pulse-slow">
+                <svg class="w-24 h-24 text-vintage-brown" viewBox="0 0 24 24">
+                    <path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8 S16.41,20,12,20z" fill="#8B4513"/>
+                    <path d="M12.5,7H11v6l5.25,3.15l0.75-1.23l-4.5-2.67V7z" fill="#8B4513"/>
+                </svg>
+            </div>
+            <h1 class="text-[clamp(2rem,5vw,3rem)] font-bold text-vintage-brown mb-4 text-center tracking-wide">时光记忆</h1>
+            <p class="text-vintage-dark text-center mb-8 font-handwriting">记录生活的每一个美好瞬间</p>
+            <div class="mt-12 w-full max-w-xs">
+                <button class="w-full bg-vintage-brown text-vintage-cream py-3 px-6 rounded-sm text-lg font-vintage shadow-vintage hover:shadow-vintage-hover transition-all transform hover:-translate-y-1">
+                    开始旅程
+                </button>
+            </div>
+            
+            <!-- 复古装饰元素 -->
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex items-center gap-2">
+                <div class="w-4 h-1 bg-vintage-red rounded-full"></div>
+                <div class="w-4 h-1 bg-vintage-gold rounded-full"></div>
+                <div class="w-4 h-1 bg-vintage-brown rounded-full"></div>
+            </div>
+            
+            <!-- 手绘装饰 -->
+            <svg class="absolute top-10 right-10 w-16 h-16 text-vintage-brown opacity-30" viewBox="0 0 100 100">
+                <path d="M10,50 Q30,10 50,50 T90,50" stroke="currentColor" fill="none" stroke-width="2" stroke-dasharray="5,5"/>
+                <circle cx="50" cy="50" r="30" stroke="currentColor" fill="none" stroke-width="1"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 首页 -->
+    <div class="w-[375px] h-[812px] bg-vintage-beige border border-vintage-brown rounded-lg relative overflow-hidden shadow-lg">
+        <!-- 状态栏 -->
+        <div class="h-12 bg-vintage-brown text-vintage-cream flex items-center justify-between px-4 border-b border-vintage-gold">
+            <span class="font-vintage">9:41</span>
+            <div class="flex items-center gap-2">
+                <i class="fa fa-signal"></i>
+                <i class="fa fa-wifi"></i>
+                <i class="fa fa-battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="h-[calc(100%-104px)] overflow-y-auto p-4 texture-paper">
+            <div class="mb-6">
+                <h1 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-vintage-brown mb-2">我的时光</h1>
+                <div class="handdrawn-line w-full mb-4"></div>
+            </div>
+            
+            <!-- 欢迎卡片 -->
+            <div class="bg-vintage-cream border-2 border-vintage-brown p-5 mb-6 vintage-card retro-shadow">
+                <div class="flex items-center gap-4 mb-4">
+                    <img src="https://picsum.photos/id/64/80/80" alt="Profile" class="w-16 h-16 rounded-sm border-2 border-vintage-brown object-cover">
+                    <div>
+                        <h2 class="font-bold text-vintage-brown text-xl">你好，时光旅人</h2>
+                        <p class="text-vintage-dark text-sm">今天是记录美好的一天</p>
+                    </div>
+                </div>
+                <p class="text-vintage-dark text-sm mb-4">你已经记录了 <span class="font-bold text-vintage-red">24</span> 个美好瞬间，继续保持！</p>
+                <button class="w-full bg-vintage-red text-vintage-cream py-2 px-4 rounded-sm text-sm font-vintage hover:bg-vintage-brown transition-colors">
+                    <i class="fa fa-plus mr-2"></i>创建新记录
+                </button>
+            </div>
+            
+            <!-- 最近记忆 -->
+            <div class="mb-6">
+                <h3 class="font-bold text-vintage-brown text-lg mb-3 flex items-center">
+                    <i class="fa fa-clock-o mr-2"></i>最近记忆
+                </h3>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- 记忆卡片1 -->
+                    <div class="bg-vintage-light border border-vintage-brown overflow-hidden vintage-card">
+                        <img src="https://picsum.photos/id/29/300/200" alt="Memory" class="w-full h-32 object-cover border-b-2 border-vintage-brown">
+                        <div class="p-3">
+                            <h4 class="font-bold text-vintage-brown text-sm mb-1">周末咖啡馆</h4>
+                            <p class="text-vintage-dark text-xs mb-2">2023年6月15日</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs bg-vintage-gold/30 text-vintage-brown px-2 py-1 rounded-sm">快乐时光</span>
+                                <i class="fa fa-heart text-vintage-red"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 记忆卡片2 -->
+                    <div class="bg-vintage-light border border-vintage-brown overflow-hidden vintage-card">
+                        <img src="https://picsum.photos/id/42/300/200" alt="Memory" class="w-full h-32 object-cover border-b-2 border-vintage-brown">
+                        <div class="p-3">
+                            <h4 class="font-bold text-vintage-brown text-sm mb-1">山间徒步</h4>
+                            <p class="text-vintage-dark text-xs mb-2">2023年6月10日</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs bg-vintage-gold/30 text-vintage-brown px-2 py-1 rounded-sm">冒险</span>
+                                <i class="fa fa-heart text-vintage-red"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 月度精选 -->
+            <div class="mb-6">
+                <h3 class="font-bold text-vintage-brown text-lg mb-3 flex items-center">
+                    <i class="fa fa-star mr-2"></i>月度精选
+                </h3>
+                
+                <div class="bg-vintage-cream border-2 border-vintage-brown p-4 vintage-card">
+                    <div class="flex gap-3 mb-3">
+                        <img src="https://picsum.photos/id/106/100/100" alt="Monthly highlight" class="w-20 h-20 rounded-sm border border-vintage-brown object-cover">
+                        <div>
+                            <h4 class="font-bold text-vintage-brown">海边日落</h4>
+                            <p class="text-vintage-dark text-sm">6月精选记忆</p>
+                            <div class="flex items-center text-xs mt-1">
+                                <i class="fa fa-map-marker text-vintage-red mr-1"></i>
+                                <span>厦门海滩</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-vintage-dark text-sm italic">"最美的日落，和最爱的人一起见证..."</p>
+                </div>
+            </div>
+            
+            <!-- 复古装饰 -->
+            <div class="flex justify-center my-6">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-1 bg-vintage-brown"></div>
+                    <svg class="w-6 h-6 text-vintage-brown" viewBox="0 0 24 24">
+                        <path d="M12,21.35l-1.45-1.32C5.4,15.36 2,12.28 2,8.5C2,5.42 4.42,3 7.5,3c1.74,0 3.41,0.81 4.5,2.09C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.42 22,8.5c0,3.78-3.4,6.86-8.55,11.54L12,21.35z" fill="#8B4513"/>
+                    </svg>
+                    <div class="w-8 h-1 bg-vintage-brown"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="h-16 bg-vintage-brown border-t-2 border-vintage-gold flex absolute bottom-0 w-full">
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-gold">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                <span class="text-xs">首页</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-record"/></svg>
+                <span class="text-xs">记录</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-stats"/></svg>
+                <span class="text-xs">统计</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-settings"/></svg>
+                <span class="text-xs">设置</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 记录页 -->
+    <div class="w-[375px] h-[812px] bg-vintage-beige border border-vintage-brown rounded-lg relative overflow-hidden shadow-lg">
+        <!-- 状态栏 -->
+        <div class="h-12 bg-vintage-brown text-vintage-cream flex items-center justify-between px-4 border-b border-vintage-gold">
+            <span class="font-vintage">9:45</span>
+            <div class="flex items-center gap-2">
+                <i class="fa fa-signal"></i>
+                <i class="fa fa-wifi"></i>
+                <i class="fa fa-battery-three-quarters"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="h-[calc(100%-104px)] overflow-y-auto p-4 texture-paper">
+            <div class="mb-6">
+                <h1 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-vintage-brown mb-2">创建记忆</h1>
+                <div class="handdrawn-line w-full mb-4"></div>
+            </div>
+            
+            <!-- 照片上传区域 -->
+            <div class="border-2 border-dashed border-vintage-brown bg-vintage-cream p-6 mb-6 text-center vintage-card">
+                <label class="cursor-pointer">
+                    <div class="flex flex-col items-center">
+                        <svg class="w-12 h-12 text-vintage-brown mb-3" viewBox="0 0 24 24">
+                            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" fill="#8B4513"/>
+                        </svg>
+                        <p class="text-vintage-brown font-bold mb-2">添加照片</p>
+                        <p class="text-vintage-dark text-sm">点击上传或拖拽图片</p>
+                        <input type="file" class="hidden">
+                    </div>
+                </label>
+            </div>
+            
+            <!-- 表单区域 -->
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-vintage-brown font-bold mb-1 text-sm">标题</label>
+                    <input type="text" placeholder="给这段记忆起个名字..." class="w-full bg-vintage-cream border-2 border-vintage-brown p-3 rounded-sm focus:outline-none focus:border-vintage-gold font-vintage">
+                </div>
+                
+                <div>
+                    <label class="block text-vintage-brown font-bold mb-1 text-sm">日期</label>
+                    <input type="date" class="w-full bg-vintage-cream border-2 border-vintage-brown p-3 rounded-sm focus:outline-none focus:border-vintage-gold font-vintage">
+                </div>
+                
+                <div>
+                    <label class="block text-vintage-brown font-bold mb-1 text-sm">地点</label>
+                    <input type="text" placeholder="记录发生的地点..." class="w-full bg-vintage-cream border-2 border-vintage-brown p-3 rounded-sm focus:outline-none focus:border-vintage-gold font-vintage">
+                </div>
+                
+                <div>
+                    <label class="block text-vintage-brown font-bold mb-1 text-sm">分类</label>
+                    <select class="w-full bg-vintage-cream border-2 border-vintage-brown p-3 rounded-sm focus:outline-none focus:border-vintage-gold font-vintage">
+                        <option>选择分类...</option>
+                        <option>旅行</option>
+                        <option>美食</option>
+                        <option>聚会</option>
+                        <option>自然</option>
+                        <option>日常</option>
+                        <option>其他</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-vintage-brown font-bold mb-1 text-sm">描述</label>
+                    <textarea rows="4" placeholder="描述这段美好的回忆..." class="w-full bg-vintage-cream border-2 border-vintage-brown p-3 rounded-sm focus:outline-none focus:border-vintage-gold font-vintage"></textarea>
+                </div>
+            </div>
+            
+            <!-- 情绪标签 -->
+            <div class="mb-8">
+                <h3 class="font-bold text-vintage-brown text-sm mb-3">当时的心情</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 bg-vintage-cream border border-vintage-brown rounded-sm text-sm cursor-pointer hover:bg-vintage-gold/20 transition-colors">开心</span>
+                    <span class="px-3 py-1 bg-vintage-cream border border-vintage-brown rounded-sm text-sm cursor-pointer hover:bg-vintage-gold/20 transition-colors">平静</span>
+                    <span class="px-3 py-1 bg-vintage-cream border border-vintage-brown rounded-sm text-sm cursor-pointer hover:bg-vintage-gold/20 transition-colors">惊喜</span>
+                    <span class="px-3 py-1 bg-vintage-cream border border-vintage-brown rounded-sm text-sm cursor-pointer hover:bg-vintage-gold/20 transition-colors">感动</span>
+                    <span class="px-3 py-1 bg-vintage-cream border border-vintage-brown rounded-sm text-sm cursor-pointer hover:bg-vintage-gold/20 transition-colors">浪漫</span>
+                    <span class="px-3 py-1 bg-vintage-cream border border-vintage-brown rounded-sm text-sm cursor-pointer hover:bg-vintage-gold/20 transition-colors">兴奋</span>
+                </div>
+            </div>
+            
+            <!-- 保存按钮 -->
+            <div class="flex gap-4">
+                <button class="w-1/2 bg-vintage-brown text-vintage-cream py-3 px-4 rounded-sm font-vintage shadow-vintage hover:shadow-vintage-hover transition-all">
+                    <i class="fa fa-save mr-2"></i>保存草稿
+                </button>
+                <button class="w-1/2 bg-vintage-red text-vintage-cream py-3 px-4 rounded-sm font-vintage shadow-vintage hover:shadow-vintage-hover transition-all">
+                    <i class="fa fa-heart mr-2"></i>永久保存
+                </button>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="h-16 bg-vintage-brown border-t-2 border-vintage-gold flex absolute bottom-0 w-full">
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                <span class="text-xs">首页</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-gold">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-record"/></svg>
+                <span class="text-xs">记录</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-stats"/></svg>
+                <span class="text-xs">统计</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-settings"/></svg>
+                <span class="text-xs">设置</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 统计页 -->
+    <div class="w-[375px] h-[812px] bg-vintage-beige border border-vintage-brown rounded-lg relative overflow-hidden shadow-lg">
+        <!-- 状态栏 -->
+        <div class="h-12 bg-vintage-brown text-vintage-cream flex items-center justify-between px-4 border-b border-vintage-gold">
+            <span class="font-vintage">10:02</span>
+            <div class="flex items-center gap-2">
+                <i class="fa fa-signal"></i>
+                <i class="fa fa-wifi"></i>
+                <i class="fa fa-battery-half"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="h-[calc(100%-104px)] overflow-y-auto p-4 texture-paper">
+            <div class="mb-6">
+                <h1 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-vintage-brown mb-2">时光统计</h1>
+                <div class="handdrawn-line w-full mb-4"></div>
+            </div>
+            
+            <!-- 统计概览卡片 -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-vintage-cream border-2 border-vintage-brown p-4 text-center vintage-card">
+                    <h3 class="text-vintage-dark text-sm mb-1">总记忆数</h3>
+                    <p class="text-3xl font-bold text-vintage-brown">42</p>
+                    <p class="text-xs text-vintage-red mt-1">+3 本月</p>
+                </div>
+                
+                <div class="bg-vintage-cream border-2 border-vintage-brown p-4 text-center vintage-card">
+                    <h3 class="text-vintage-dark text-sm mb-1">照片总数</h3>
+                    <p class="text-3xl font-bold text-vintage-brown">128</p>
+                    <p class="text-xs text-vintage-red mt-1">+12 本月</p>
+                </div>
+            </div>
+            
+            <!-- 月度统计图表 -->
+            <div class="bg-vintage-cream border-2 border-vintage-brown p-4 mb-6 vintage-card">
+                <h3 class="font-bold text-vintage-brown mb-3">月度记录趋势</h3>
+                <div class="h-64">
+                    <canvas id="memoryChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- 分类统计 -->
+            <div class="mb-6">
+                <h3 class="font-bold text-vintage-brown text-lg mb-3 flex items-center">
+                    <i class="fa fa-folder-open mr-2"></i>分类统计
+                </h3>
+                
+                <div class="space-y-3">
+                    <div class="bg-vintage-cream border border-vintage-brown p-3 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <span class="w-3 h-3 bg-vintage-red rounded-full mr-2"></span>
+                            <span>旅行</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-32 h-4 bg-vintage-light border border-vintage-brown mr-2 overflow-hidden">
+                                <div class="h-full bg-vintage-red" style="width: 45%"></div>
+                            </div>
+                            <span>18</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-vintage-cream border border-vintage-brown p-3 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <span class="w-3 h-3 bg-vintage-gold rounded-full mr-2"></span>
+                            <span>美食</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-32 h-4 bg-vintage-light border border-vintage-brown mr-2 overflow-hidden">
+                                <div class="h-full bg-vintage-gold" style="width: 30%"></div>
+                            </div>
+                            <span>12</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-vintage-cream border border-vintage-brown p-3 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <span class="w-3 h-3 bg-vintage-brown rounded-full mr-2"></span>
+                            <span>日常</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-32 h-4 bg-vintage-light border border-vintage-brown mr-2 overflow-hidden">
+                                <div class="h-full bg-vintage-brown" style="width: 20%"></div>
+                            </div>
+                            <span>8</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-vintage-cream border border-vintage-brown p-3 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <span class="w-3 h-3 bg-gray-500 rounded-full mr-2"></span>
+                            <span>其他</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-32 h-4 bg-vintage-light border border-vintage-brown mr-2 overflow-hidden">
+                                <div class="h-full bg-gray-500" style="width: 5%"></div>
+                            </div>
+                            <span>4</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 成就卡片 -->
+            <div class="bg-vintage-cream border-2 border-vintage-brown p-4 mb-6 vintage-card">
+                <h3 class="font-bold text-vintage-brown mb-3 flex items-center">
+                    <i class="fa fa-trophy mr-2 text-vintage-gold"></i>我的成就
+                </h3>
+                
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="border border-vintage-brown p-2 text-center">
+                        <div class="text-vintage-gold mb-1">🏆</div>
+                        <p class="text-xs">记忆达人</p>
+                    </div>
+                    
+                    <div class="border border-vintage-brown p-2 text-center">
+                        <div class="text-vintage-gold mb-1">📸</div>
+                        <p class="text-xs">摄影爱好者</p>
+                    </div>
+                    
+                    <div class="border border-vintage-brown p-2 text-center opacity-50">
+                        <div class="text-gray-400 mb-1">🔍</div>
+                        <p class="text-xs">探索者</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="h-16 bg-vintage-brown border-t-2 border-vintage-gold flex absolute bottom-0 w-full">
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                <span class="text-xs">首页</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-record"/></svg>
+                <span class="text-xs">记录</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-gold">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-stats"/></svg>
+                <span class="text-xs">统计</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-settings"/></svg>
+                <span class="text-xs">设置</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设置页 -->
+    <div class="w-[375px] h-[812px] bg-vintage-beige border border-vintage-brown rounded-lg relative overflow-hidden shadow-lg">
+        <!-- 状态栏 -->
+        <div class="h-12 bg-vintage-brown text-vintage-cream flex items-center justify-between px-4 border-b border-vintage-gold">
+            <span class="font-vintage">10:15</span>
+            <div class="flex items-center gap-2">
+                <i class="fa fa-signal"></i>
+                <i class="fa fa-wifi"></i>
+                <i class="fa fa-battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="h-[calc(100%-104px)] overflow-y-auto p-4 texture-paper">
+            <div class="mb-6">
+                <h1 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-vintage-brown mb-2">设置</h1>
+                <div class="handdrawn-line w-full mb-4"></div>
+            </div>
+            
+            <!-- 个人资料 -->
+            <div class="bg-vintage-cream border-2 border-vintage-brown p-5 mb-6 vintage-card">
+                <div class="flex items-center gap-4 mb-4">
+                    <img src="https://picsum.photos/id/64/80/80" alt="Profile" class="w-16 h-16 rounded-sm border-2 border-vintage-brown object-cover">
+                    <div>
+                        <h2 class="font-bold text-vintage-brown text-xl">时光旅人</h2>
+                        <button class="text-vintage-red text-sm underline">编辑个人资料</button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center border border-vintage-brown p-2">
+                        <p class="text-sm text-vintage-dark">加入时间</p>
+                        <p class="font-bold text-vintage-brown">2023年1月</p>
+                    </div>
+                    
+                    <div class="text-center border border-vintage-brown p-2">
+                        <p class="text-sm text-vintage-dark">记忆数量</p>
+                        <p class="font-bold text-vintage-brown">42</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 设置选项 -->
+            <div class="mb-6">
+                <h3 class="font-bold text-vintage-brown text-lg mb-3 flex items-center">
+                    <i class="fa fa-cog mr-2"></i>应用设置
+                </h3>
+                
+                <div class="space-y-2">
+                    <div class="bg-vintage-cream border border-vintage-brown p-3 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <i class="fa fa-cloud text-vintage-brown mr-3"></i>
+                            <span>云同步</span>
+                        </div>
+                        <label class="relative inline-block w-10 h-5">
+                            <input type="checkbox" class="opacity-0 w-0 h-0" checked>
+                            <span class="absolute cursor-pointer inset-0 bg-vintage-light border border-vintage-brown rounded-sm before:content-[''] before:absolute before:h-4 before:w-4 before:left-0.5 before:bottom-0.5 before:bg-vintage-cream before:border before:border-vintage-brown before:transition-all checked:before:translate-x-5 checked:before:bg-vintage-red"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="bg-vintage-cream border border-vintage-brown p-3 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <i class="fa fa-lock text-vintage-brown mr-3"></i>
+                            <span>隐私保护</span>
+                        </div>
+                        <label class="relative inline-block w-10 h-5">
+                            <input type="checkbox" class="opacity-0 w-0 h-0" checked>
+                            <span class="absolute cursor-pointer inset-0 bg-vintage-light border border-vintage-brown rounded-sm before:content-[''] before:absolute before:h-4 before:w-4 before:left-0.5 before:bottom-0.5 before:bg-vintage-cream before:border before:border-vintage-brown before:transition-all checked:before:translate-x-5 checked:before:bg-vintage-red"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="bg-vintage-cream border border-vintage-brown p-3 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <i class="fa fa-bell text-vintage-brown mr-3"></i>
+                            <span>通知提醒</span>
+                        </div>
+                        <label class="relative inline-block w-10 h-5">
+                            <input type="checkbox" class="opacity-0 w-0 h-0">
+                            <span class="absolute cursor-pointer inset-0 bg-vintage-light border border-vintage-brown rounded-sm before:content-[''] before:absolute before:h-4 before:w-4 before:left-0.5 before:bottom-0.5 before:bg-vintage-cream before:border before:border-vintage-brown before:transition-all checked:before:translate-x-5 checked:before:bg-vintage-red"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="bg-vintage-cream border border-vintage-brown p-3 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <i class="fa fa-paint-brush text-vintage-brown mr-3"></i>
+                            <span>复古主题</span>
+                        </div>
+                        <label class="relative inline-block w-10 h-5">
+                            <input type="checkbox" class="opacity-0 w-0 h-0" checked>
+                            <span class="absolute cursor-pointer inset-0 bg-vintage-light border border-vintage-brown rounded-sm before:content-[''] before:absolute before:h-4 before:w-4 before:left-0.5 before:bottom-0.5 before:bg-vintage-cream before:border before:border-vintage-brown before:transition-all checked:before:translate-x-5 checked:before:bg-vintage-red"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 其他选项 -->
+            <div class="space-y-3 mb-8">
+                <div class="bg-vintage-cream border border-vintage-brown p-3 flex items-center vintage-card">
+                    <i class="fa fa-question-circle text-vintage-brown mr-3"></i>
+                    <span>帮助与支持</span>
+                    <i class="fa fa-chevron-right text-vintage-dark ml-auto"></i>
+                </div>
+                
+                <div class="bg-vintage-cream border border-vintage-brown p-3 flex items-center vintage-card">
+                    <i class="fa fa-shield text-vintage-brown mr-3"></i>
+                    <span>隐私政策</span>
+                    <i class="fa fa-chevron-right text-vintage-dark ml-auto"></i>
+                </div>
+                
+                <div class="bg-vintage-cream border border-vintage-brown p-3 flex items-center vintage-card">
+                    <i class="fa fa-info-circle text-vintage-brown mr-3"></i>
+                    <span>关于我们</span>
+                    <i class="fa fa-chevron-right text-vintage-dark ml-auto"></i>
+                </div>
+                
+                <div class="bg-vintage-cream border border-vintage-brown p-3 flex items-center vintage-card">
+                    <i class="fa fa-sign-out text-vintage-red mr-3"></i>
+                    <span>退出登录</span>
+                    <i class="fa fa-chevron-right text-vintage-dark ml-auto"></i>
+                </div>
+            </div>
+            
+            <!-- 版本信息 -->
+            <div class="text-center text-vintage-dark text-xs">
+                <p>时光记忆 v1.0.0</p>
+                <p class="mt-1">© 2025 时光记忆保留所有权利</p>
+            </div>
+            
+            <!-- 复古装饰 -->
+            <div class="flex justify-center my-6">
+                <svg class="w-12 h-12 text-vintage-brown opacity-20" viewBox="0 0 24 24">
+                    <path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8 S16.41,20,12,20z" fill="#8B4513"/>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="h-16 bg-vintage-brown border-t-2 border-vintage-gold flex absolute bottom-0 w-full">
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                <span class="text-xs">首页</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-record"/></svg>
+                <span class="text-xs">记录</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-stats"/></svg>
+                <span class="text-xs">统计</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-gold">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-settings"/></svg>
+                <span class="text-xs">设置</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 目标设定流程 -->
+    <div class="w-[375px] h-[812px] bg-vintage-beige border border-vintage-brown rounded-lg relative overflow-hidden shadow-lg">
+        <!-- 状态栏 -->
+        <div class="h-12 bg-vintage-brown text-vintage-cream flex items-center justify-between px-4 border-b border-vintage-gold">
+            <span class="font-vintage">14:30</span>
+            <div class="flex items-center gap-2">
+                <i class="fa fa-signal"></i>
+                <i class="fa fa-wifi"></i>
+                <i class="fa fa-battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="h-[calc(100%-48px)] overflow-y-auto p-6 flex flex-col items-center justify-center texture-paper">
+            <div class="w-full max-w-xs">
+                <!-- 进度指示器 -->
+                <div class="flex justify-between mb-8">
+                    <div class="w-8 h-8 rounded-full bg-vintage-red text-white flex items-center justify-center border-2 border-vintage-brown">1</div>
+                    <div class="flex-1 h-1 bg-vintage-brown mx-2"></div>
+                    <div class="w-8 h-8 rounded-full bg-vintage-cream text-vintage-brown flex items-center justify-center border-2 border-vintage-brown">2</div>
+                    <div class="flex-1 h-1 bg-vintage-brown mx-2"></div>
+                    <div class="w-8 h-8 rounded-full bg-vintage-cream text-vintage-brown flex items-center justify-center border-2 border-vintage-brown">3</div>
+                </div>
+                
+                <h2 class="text-xl font-bold text-vintage-brown mb-2 text-center">设定你的记忆目标</h2>
+                <p class="text-vintage-dark text-center mb-8">记录生活中的美好，让回忆更有意义</p>
+                
+                <div class="bg-vintage-cream border-2 border-vintage-brown p-5 mb-6">
+                    <h3 class="font-bold text-vintage-brown mb-4 text-center">你希望多久记录一次？</h3>
+                    
+                    <div class="space-y-3">
+                        <label class="block bg-vintage-light border-2 border-vintage-brown p-3 cursor-pointer hover:bg-vintage-gold/20 transition-colors">
+                            <input type="radio" name="frequency" class="mr-2" checked>
+                            <span>每天记录</span>
+                        </label>
+                        
+                        <label class="block bg-vintage-light border-2 border-vintage-brown p-3 cursor-pointer hover:bg-vintage-gold/20 transition-colors">
+                            <input type="radio" name="frequency" class="mr-2">
+                            <span>每周记录</span>
+                        </label>
+                        
+                        <label class="block bg-vintage-light border-2 border-vintage-brown p-3 cursor-pointer hover:bg-vintage-gold/20 transition-colors">
+                            <input type="radio" name="frequency" class="mr-2">
+                            <span>每月记录</span>
+                        </label>
+                        
+                        <label class="block bg-vintage-light border-2 border-vintage-brown p-3 cursor-pointer hover:bg-vintage-gold/20 transition-colors">
+                            <input type="radio" name="frequency" class="mr-2">
+                            <span>随心所欲</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="bg-vintage-cream border-2 border-vintage-brown p-5 mb-8">
+                    <h3 class="font-bold text-vintage-brown mb-4 text-center">你想记录哪些类型的回忆？</h3>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="block bg-vintage-light border border-vintage-brown p-2 text-center cursor-pointer hover:bg-vintage-gold/20 transition-colors">
+                            <input type="checkbox" class="mr-1">
+                            <span>旅行</span>
+                        </label>
+                        
+                        <label class="block bg-vintage-light border border-vintage-brown p-2 text-center cursor-pointer hover:bg-vintage-gold/20 transition-colors">
+                            <input type="checkbox" class="mr-1" checked>
+                            <span>美食</span>
+                        </label>
+                        
+                        <label class="block bg-vintage-light border border-vintage-brown p-2 text-center cursor-pointer hover:bg-vintage-gold/20 transition-colors">
+                            <input type="checkbox" class="mr-1" checked>
+                            <span>聚会</span>
+                        </label>
+                        
+                        <label class="block bg-vintage-light border border-vintage-brown p-2 text-center cursor-pointer hover:bg-vintage-gold/20 transition-colors">
+                            <input type="checkbox" class="mr-1">
+                            <span>自然</span>
+                        </label>
+                        
+                        <label class="block bg-vintage-light border border-vintage-brown p-2 text-center cursor-pointer hover:bg-vintage-gold/20 transition-colors">
+                            <input type="checkbox" class="mr-1">
+                            <span>日常</span>
+                        </label>
+                        
+                        <label class="block bg-vintage-light border border-vintage-brown p-2 text-center cursor-pointer hover:bg-vintage-gold/20 transition-colors">
+                            <input type="checkbox" class="mr-1">
+                            <span>其他</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button class="w-1/2 bg-vintage-brown text-vintage-cream py-3 px-4 rounded-sm font-vintage shadow-vintage hover:shadow-vintage-hover transition-all">
+                        上一步
+                    </button>
+                    <button class="w-1/2 bg-vintage-red text-vintage-cream py-3 px-4 rounded-sm font-vintage shadow-vintage hover:shadow-vintage-hover transition-all">
+                        下一步
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 手绘装饰元素 -->
+            <svg class="absolute bottom-10 left-10 w-16 h-16 text-vintage-brown opacity-20" viewBox="0 0 100 100">
+                <path d="M10,50 Q30,20 50,50 T90,50" stroke="currentColor" fill="none" stroke-width="2"/>
+                <circle cx="50" cy="50" r="30" stroke="currentColor" fill="none" stroke-width="1" stroke-dasharray="5,3"/>
+            </svg>
+            
+            <svg class="absolute top-20 right-10 w-20 h-20 text-vintage-brown opacity-20" viewBox="0 0 100 100">
+                <path d="M20,20 C40,0 60,0 80,20 C100,40 100,60 80,80 C60,100 40,100 20,80 C0,60 0,40 20,20" stroke="currentColor" fill="none" stroke-width="2"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 记忆详情页 -->
+    <div class="w-[375px] h-[812px] bg-vintage-beige border border-vintage-brown rounded-lg relative overflow-hidden shadow-lg">
+        <!-- 状态栏 -->
+        <div class="h-12 bg-vintage-brown text-vintage-cream flex items-center justify-between px-4 border-b border-vintage-gold">
+            <span class="font-vintage">16:45</span>
+            <div class="flex items-center gap-2">
+                <i class="fa fa-signal"></i>
+                <i class="fa fa-wifi"></i>
+                <i class="fa fa-battery-three-quarters"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="h-[calc(100%-104px)] overflow-y-auto texture-paper">
+            <!-- 照片区域 -->
+            <div class="w-full h-64 relative">
+                <img src="https://picsum.photos/id/106/800/400" alt="海边日落" class="w-full h-full object-cover">
+                <div class="absolute top-4 left-4 bg-vintage-brown/80 text-vintage-cream px-3 py-1 text-sm">
+                    <i class="fa fa-heart text-vintage-red mr-1"></i> 32
+                </div>
+                <button class="absolute top-4 right-4 bg-vintage-cream/80 text-vintage-brown p-2 rounded-sm">
+                    <i class="fa fa-bookmark"></i>
+                </button>
+            </div>
+            
+            <!-- 内容详情 -->
+            <div class="p-5">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-vintage-brown">海边日落</h1>
+                        <div class="flex items-center text-vintage-dark mt-1">
+                            <i class="fa fa-calendar mr-1"></i>
+                            <span class="text-sm">2023年6月15日</span>
+                            <span class="mx-2">•</span>
+                            <i class="fa fa-map-marker text-vintage-red mr-1"></i>
+                            <span class="text-sm">厦门海滩</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="bg-vintage-cream border border-vintage-brown p-2 hover:bg-vintage-gold/20 transition-colors">
+                            <i class="fa fa-edit text-vintage-brown"></i>
+                        </button>
+                        <button class="bg-vintage-cream border border-vintage-brown p-2 hover:bg-vintage-gold/20 transition-colors">
+                            <i class="fa fa-share-alt text-vintage-brown"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="handdrawn-line w-full mb-4"></div>
+                
+                <div class="mb-6">
+                    <h3 class="font-bold text-vintage-brown mb-2">回忆描述</h3>
+                    <p class="text-vintage-dark leading-relaxed">
+                        这是今年夏天最美好的回忆之一。和家人一起在厦门的海滩上等待日落，天空从湛蓝变成橙红，再到深紫。海浪轻轻拍打着沙滩，孩子们在岸边追逐嬉戏，大人们聊着天，享受这难得的宁静时光。
+                        <br><br>
+                        当太阳完全沉入海平面，天空变成了一幅绚丽的画卷，所有人都停下脚步，为这大自然的美景惊叹。那一刻，我感受到了生活的美好与珍贵。
+                    </p>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-bold text-vintage-brown mb-2">当时的心情</h3>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <span class="px-3 py-1 bg-vintage-gold/20 text-vintage-brown border border-vintage-brown rounded-sm text-sm">感动</span>
+                        <span class="px-3 py-1 bg-vintage-gold/20 text-vintage-brown border border-vintage-brown rounded-sm text-sm">平静</span>
+                        <span class="px-3 py-1 bg-vintage-gold/20 text-vintage-brown border border-vintage-brown rounded-sm text-sm">幸福</span>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-bold text-vintage-brown mb-2">同行的人</h3>
+                    <div class="flex gap-3 mt-2">
+                        <div class="text-center">
+                            <img src="https://picsum.photos/id/64/60/60" alt="Family" class="w-12 h-12 rounded-sm border-2 border-vintage-brown object-cover">
+                            <p class="text-xs mt-1">家人</p>
+                        </div>
+                        <div class="text-center">
+                            <img src="https://picsum.photos/id/76/60/60" alt="Friend" class="w-12 h-12 rounded-sm border-2 border-vintage-brown object-cover">
+                            <p class="text-xs mt-1">朋友</p>
+                        </div>
+                        <div class="text-center">
+                            <img src="https://picsum.photos/id/91/60/60" alt="Friend" class="w-12 h-12 rounded-sm border-2 border-vintage-brown object-cover">
+                            <p class="text-xs mt-1">朋友</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 复古装饰 -->
+                <div class="flex justify-center my-6">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-1 bg-vintage-brown"></div>
+                        <svg class="w-6 h-6 text-vintage-brown" viewBox="0 0 24 24">
+                            <path d="M12,21.35l-1.45-1.32C5.4,15.36 2,12.28 2,8.5C2,5.42 4.42,3 7.5,3c1.74,0 3.41,0.81 4.5,2.09C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.42 22,8.5c0,3.78-3.4,6.86-8.55,11.54L12,21.35z" fill="#8B4513"/>
+                        </svg>
+                        <div class="w-8 h-1 bg-vintage-brown"></div>
+                    </div>
+                </div>
+                
+                <!-- 评论区 -->
+                <div>
+                    <h3 class="font-bold text-vintage-brown mb-3 flex items-center">
+                        <i class="fa fa-comments mr-2"></i>回忆评论
+                    </h3>
+                    
+                    <div class="mb-4">
+                        <div class="flex gap-3 mb-3">
+                            <img src="https://picsum.photos/id/64/60/60" alt="User" class="w-10 h-10 rounded-sm border border-vintage-brown object-cover">
+                            <div class="flex-1">
+                                <div class="bg-vintage-cream border border-vintage-brown p-3 rounded-sm">
+                                    <div class="flex justify-between">
+                                        <h4 class="font-bold text-vintage-brown text-sm">自己</h4>
+                                        <span class="text-xs text-vintage-dark">昨天</span>
+                                    </div>
+                                    <p class="text-vintage-dark text-sm mt-1">这是我今年最难忘的日落之一！</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-3">
+                            <img src="https://picsum.photos/id/76/60/60" alt="Friend" class="w-10 h-10 rounded-sm border border-vintage-brown object-cover">
+                            <div class="flex-1">
+                                <div class="bg-vintage-cream border border-vintage-brown p-3 rounded-sm">
+                                    <div class="flex justify-between">
+                                        <h4 class="font-bold text-vintage-brown text-sm">小明</h4>
+                                        <span class="text-xs text-vintage-dark">3天前</span>
+                                    </div>
+                                    <p class="text-vintage-dark text-sm mt-1">太美了！真希望当时我也在场...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 添加评论 -->
+                    <div class="flex gap-3">
+                        <img src="https://picsum.photos/id/64/60/60" alt="Profile" class="w-10 h-10 rounded-sm border border-vintage-brown object-cover">
+                        <div class="flex-1">
+                            <div class="bg-vintage-cream border border-vintage-brown p-3 rounded-sm flex">
+                                <input type="text" placeholder="分享你的感受..." class="flex-1 bg-transparent focus:outline-none text-sm">
+                                <button class="text-vintage-red ml-2">
+                                    <i class="fa fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="h-16 bg-vintage-brown border-t-2 border-vintage-gold flex absolute bottom-0 w-full">
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-gold">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                <span class="text-xs">首页</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-record"/></svg>
+                <span class="text-xs">记录</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-stats"/></svg>
+                <span class="text-xs">统计</span>
+            </div>
+            <div class="w-1/4 flex flex-col items-center justify-center text-vintage-cream">
+                <svg class="w-6 h-6 mb-1"><use href="#icon-settings"/></svg>
+                <span class="text-xs">设置</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化图表
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('memoryChart').getContext('2d');
+            
+            // 创建复古风格的图表
+            const memoryChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                    datasets: [{
+                        label: '记忆数量',
+                        data: [5, 7, 4, 8, 6, 12],
+                        borderColor: '#8B4513',
+                        backgroundColor: 'rgba(205, 92, 92, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#8B4513',
+                        pointBorderColor: '#FFF8DC',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#FFF8DC',
+                            titleColor: '#8B4513',
+                            bodyColor: '#8B4513',
+                            borderColor: '#8B4513',
+                            borderWidth: 2,
+                            padding: 10,
+                            cornerRadius: 0
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(139, 69, 19, 0.1)',
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                color: '#8B4513',
+                                font: {
+                                    family: 'Georgia'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#8B4513',
+                                font: {
+                                    family: 'Georgia'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

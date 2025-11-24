@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康追踪应用 - 玻璃拟态UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .glass {
+                background: rgba(255, 255, 255, 0.7);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+            }
+            .glass-dark {
+                background: rgba(30, 30, 30, 0.7);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .pulse {
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(255, 159, 64, 0.4);
+                }
+                70% {
+                    box-shadow: 0 0 0 10px rgba(255, 159, 64, 0);
+                }
+                100% {
+                    box-shadow: 0 0 0 0 rgba(255, 159, 64, 0);
+                }
+            }
+            .progress-ring-circle {
+                transition: stroke-dashoffset 0.5s ease;
+                transform: rotate(-90deg);
+                transform-origin: 50% 50%;
+            }
+            .animate-graph {
+                stroke-dasharray: 1000;
+                stroke-dashoffset: 1000;
+                animation: dash 2s linear forwards;
+            }
+            @keyframes dash {
+                to {
+                    stroke-dashoffset: 0;
+                }
+            }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF9F40',
+                        secondary: '#34D399',
+                        dark: '#1F2937',
+                        light: '#F9FAFB',
+                        muted: '#9CA3AF',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'Roboto', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- SVG图标定义 -->
+    <svg width="0" height="0" class="hidden">
+        <symbol id="icon-home" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </symbol>
+        <symbol id="icon-stats" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+        </symbol>
+        <symbol id="icon-target" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm7-7H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-1.75 9c0 2.9-2.35 5.25-5.25 5.25S6.75 14.9 6.75 12 9.1 6.75 12 6.75 17.25 9.1 17.25 12z"/>
+        </symbol>
+        <symbol id="icon-profile" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </symbol>
+    </svg>
+
+    <div class="flex flex-wrap justify-center gap-4 p-4">
+        <!-- 1. 启动页 -->
+        <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden relative bg-gradient-to-br from-orange-50 to-amber-100 shadow-lg">
+            <!-- 状态栏 -->
+            <div class="h-14 glass px-4 flex justify-between items-center">
+                <div class="text-dark font-medium">9:41</div>
+                <div class="flex items-center gap-2">
+                    <i class="fa fa-signal text-dark"></i>
+                    <i class="fa fa-wifi text-dark"></i>
+                    <i class="fa fa-battery-full text-dark"></i>
+                </div>
+            </div>
+            
+            <!-- 启动页内容 -->
+            <div class="flex flex-col items-center justify-center h-[calc(100%-56px)] px-8">
+                <div class="w-32 h-32 rounded-full bg-primary/20 flex items-center justify-center mb-8 pulse">
+                    <svg class="w-16 h-16 text-primary" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M16 4h-2V2h-4v2H8C5.79 4 4 5.79 4 8v12c0 2.21 1.79 4 4 4h8c2.21 0 4-1.79 4-4V8c0-2.21-1.79-4-4-4zm0 14c0 1.1-.9 2-2 2H10c-1.1 0-2-.9-2-2v-2h2v2h2v-2h2v2zm0-4c0 1.1-.9 2-2 2H10c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v6zm-4-6v2h2V8h-2z"/>
+                    </svg>
+                </div>
+                <h1 class="text-4xl font-bold text-dark mb-2">健康追踪</h1>
+                <p class="text-muted text-center mb-12">记录每一天的健康数据</p>
+                
+                <button class="bg-primary text-white px-12 py-3 rounded-full font-medium text-lg glass card-hover">
+                    开始使用
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. 主页 -->
+        <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden relative bg-[url('https://images.unsplash.com/photo-1518492104633-130d0cc84637?q=80&w=1000&auto=format')] bg-cover bg-center">
+            <!-- 状态栏 -->
+            <div class="h-14 glass px-4 flex justify-between items-center">
+                <div class="text-dark font-medium">9:41</div>
+                <div class="flex items-center gap-2">
+                    <i class="fa fa-signal text-dark"></i>
+                    <i class="fa fa-wifi text-dark"></i>
+                    <i class="fa fa-battery-full text-dark"></i>
+                </div>
+            </div>
+            
+            <!-- 主页内容 -->
+            <div class="h-[calc(100%-112px)] overflow-y-auto px-4 py-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-dark">今日健康</h1>
+                    <div class="glass rounded-full p-2">
+                        <i class="fa fa-bell text-dark"></i>
+                    </div>
+                </div>
+                
+                <!-- 数据概览卡片 -->
+                <div class="glass rounded-2xl p-6 mb-6 card-hover">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-muted text-sm">今日步数</p>
+                            <h2 class="text-4xl font-bold text-dark">7,842</h2>
+                        </div>
+                        <div class="w-16 h-16 relative">
+                            <svg width="64" height="64" viewBox="0 0 64 64">
+                                <circle cx="32" cy="32" r="28" fill="none" stroke="#E5E7EB" stroke-width="4"/>
+                                <circle cx="32" cy="32" r="28" fill="none" stroke="#FF9F40" stroke-width="4" stroke-dasharray="175.84" stroke-dashoffset="44" class="progress-ring-circle"/>
+                                <text x="32" y="36" text-anchor="middle" font-size="12" font-weight="bold" fill="#1F2937">78%</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div>
+                            <p class="text-lg font-semibold text-dark">8.2km</p>
+                            <p class="text-xs text-muted">距离</p>
+                        </div>
+                        <div>
+                            <p class="text-lg font-semibold text-dark">420</p>
+                            <p class="text-xs text-muted">卡路里</p>
+                        </div>
+                        <div>
+                            <p class="text-lg font-semibold text-dark">68</p>
+                            <p class="text-xs text-muted">活动分钟</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 健康指标卡片 -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="glass rounded-2xl p-4 card-hover">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-muted text-sm">心率</p>
+                            <i class="fa fa-heartbeat text-red-500"></i>
+                        </div>
+                        <p class="text-2xl font-bold text-dark">72 <span class="text-sm font-normal">bpm</span></p>
+                    </div>
+                    <div class="glass rounded-2xl p-4 card-hover">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-muted text-sm">睡眠</p>
+                            <i class="fa fa-moon-o text-indigo-500"></i>
+                        </div>
+                        <p class="text-2xl font-bold text-dark">7.5 <span class="text-sm font-normal">小时</span></p>
+                    </div>
+                </div>
+                
+                <!-- 活动记录 -->
+                <div class="glass rounded-2xl p-4 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-dark">今日活动</h3>
+                        <a href="#" class="text-primary text-sm">查看全部</a>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+                                <i class="fa fa-walking text-primary"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-dark font-medium">晨间散步</p>
+                                <p class="text-xs text-muted">30分钟 · 2.5km</p>
+                            </div>
+                            <div class="text-primary font-medium">完成</div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center mr-3">
+                                <i class="fa fa-leaf text-secondary"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-dark font-medium">冥想</p>
+                                <p class="text-xs text-muted">15分钟 · 放松</p>
+                            </div>
+                            <div class="text-primary font-medium">完成</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 健康建议 -->
+                <div class="glass rounded-2xl p-4 card-hover">
+                    <div class="flex items-start">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3 mt-1">
+                            <i class="fa fa-lightbulb-o text-blue-500"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-dark mb-1">健康小贴士</h3>
+                            <p class="text-sm text-muted">今天您的水分摄入不足，建议增加饮水量至2000ml，有助于新陈代谢。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="h-16 glass absolute bottom-0 w-full flex justify-around items-center">
+                <a href="#" class="flex flex-col items-center text-primary">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                    <span class="text-xs">主页</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-stats"/></svg>
+                    <span class="text-xs">数据</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-target"/></svg>
+                    <span class="text-xs">目标</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-profile"/></svg>
+                    <span class="text-xs">我的</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 3. 数据统计页面 -->
+        <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden relative bg-[url('https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=1000&auto=format')] bg-cover bg-center">
+            <!-- 状态栏 -->
+            <div class="h-14 glass px-4 flex justify-between items-center">
+                <div class="text-dark font-medium">9:41</div>
+                <div class="flex items-center gap-2">
+                    <i class="fa fa-signal text-dark"></i>
+                    <i class="fa fa-wifi text-dark"></i>
+                    <i class="fa fa-battery-full text-dark"></i>
+                </div>
+            </div>
+            
+            <!-- 数据统计内容 -->
+            <div class="h-[calc(100%-112px)] overflow-y-auto px-4 py-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-dark">健康数据</h1>
+                    <div class="glass rounded-full px-3 py-1 flex items-center">
+                        <select class="bg-transparent text-dark border-none focus:outline-none text-sm">
+                            <option>本周</option>
+                            <option>本月</option>
+                            <option>全年</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- 步数图表 -->
+                <div class="glass rounded-2xl p-4 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-dark">步数统计</h3>
+                        <div class="flex space-x-2">
+                            <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs">D</div>
+                            <div class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-muted text-xs">W</div>
+                            <div class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-muted text-xs">M</div>
+                        </div>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="stepsChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- 健康指标卡片 -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="glass rounded-2xl p-4 card-hover">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-muted text-sm">平均心率</p>
+                            <span class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full">正常</span>
+                        </div>
+                        <p class="text-2xl font-bold text-dark">72 <span class="text-sm font-normal">bpm</span></p>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+                            <div class="bg-primary h-1.5 rounded-full" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div class="glass rounded-2xl p-4 card-hover">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-muted text-sm">平均睡眠</p>
+                            <span class="text-xs bg-yellow-100 text-yellow-600 px-2 py-0.5 rounded-full">良好</span>
+                        </div>
+                        <p class="text-2xl font-bold text-dark">7.2 <span class="text-sm font-normal">小时</span></p>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+                            <div class="bg-secondary h-1.5 rounded-full" style="width: 72%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 健康趋势 -->
+                <div class="glass rounded-2xl p-4 mb-6">
+                    <h3 class="font-bold text-dark mb-4">健康趋势</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="text-sm text-dark">步数</p>
+                                <p class="text-sm font-medium text-green-500">+12%</p>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-green-500 h-1.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="text-sm text-dark">睡眠时间</p>
+                                <p class="text-sm font-medium text-green-500">+5%</p>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-green-500 h-1.5 rounded-full" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="text-sm text-dark">心率</p>
+                                <p class="text-sm font-medium text-red-500">-3%</p>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-red-500 h-1.5 rounded-full" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 成就卡片 -->
+                <div class="glass rounded-2xl p-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-dark">健康成就</h3>
+                        <a href="#" class="text-primary text-sm">全部</a>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-amber-50 rounded-xl p-3 text-center card-hover">
+                            <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-2">
+                                <i class="fa fa-trophy text-amber-500"></i>
+                            </div>
+                            <p class="text-xs font-medium text-dark">连续7天</p>
+                        </div>
+                        <div class="bg-blue-50 rounded-xl p-3 text-center card-hover">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2">
+                                <i class="fa fa-star text-blue-500"></i>
+                            </div>
+                            <p class="text-xs font-medium text-dark">10000步</p>
+                        </div>
+                        <div class="bg-gray-100 rounded-xl p-3 text-center opacity-50">
+                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-2">
+                                <i class="fa fa-lock text-gray-400"></i>
+                            </div>
+                            <p class="text-xs font-medium text-muted">睡眠大师</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="h-16 glass absolute bottom-0 w-full flex justify-around items-center">
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                    <span class="text-xs">主页</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-primary">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-stats"/></svg>
+                    <span class="text-xs">数据</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-target"/></svg>
+                    <span class="text-xs">目标</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-profile"/></svg>
+                    <span class="text-xs">我的</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 4. 目标设定页面 -->
+        <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden relative bg-gradient-to-br from-blue-50 to-indigo-100">
+            <!-- 状态栏 -->
+            <div class="h-14 glass px-4 flex justify-between items-center">
+                <div class="text-dark font-medium">9:41</div>
+                <div class="flex items-center gap-2">
+                    <i class="fa fa-signal text-dark"></i>
+                    <i class="fa fa-wifi text-dark"></i>
+                    <i class="fa fa-battery-full text-dark"></i>
+                </div>
+            </div>
+            
+            <!-- 目标设定内容 -->
+            <div class="h-[calc(100%-56px)] overflow-y-auto px-4 py-4">
+                <div class="flex items-center mb-6">
+                    <a href="#" class="mr-4">
+                        <i class="fa fa-arrow-left text-dark"></i>
+                    </a>
+                    <h1 class="text-2xl font-bold text-dark">设定健康目标</h1>
+                </div>
+                
+                <!-- 目标类型选择 -->
+                <div class="glass rounded-2xl p-4 mb-6">
+                    <h3 class="font-bold text-dark mb-4">目标类型</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-primary/10 rounded-xl p-4 border-2 border-primary card-hover">
+                            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mb-2">
+                                <i class="fa fa-walking text-primary"></i>
+                            </div>
+                            <p class="font-medium text-dark">步数目标</p>
+                        </div>
+                        <div class="bg-gray-100 rounded-xl p-4 border-2 border-transparent card-hover">
+                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mb-2">
+                                <i class="fa fa-moon-o text-muted"></i>
+                            </div>
+                            <p class="font-medium text-dark">睡眠目标</p>
+                        </div>
+                        <div class="bg-gray-100 rounded-xl p-4 border-2 border-transparent card-hover">
+                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mb-2">
+                                <i class="fa fa-heartbeat text-muted"></i>
+                            </div>
+                            <p class="font-medium text-dark">心率目标</p>
+                        </div>
+                        <div class="bg-gray-100 rounded-xl p-4 border-2 border-transparent card-hover">
+                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mb-2">
+                                <i class="fa fa-cutlery text-muted"></i>
+                            </div>
+                            <p class="font-medium text-dark">饮食目标</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 步数目标设置 -->
+                <div class="glass rounded-2xl p-6 mb-6">
+                    <h3 class="font-bold text-dark mb-4">每日步数目标</h3>
+                    <div class="text-center mb-6">
+                        <p class="text-5xl font-bold text-dark" id="stepValue">10000</p>
+                        <p class="text-muted">步/天</p>
+                    </div>
+                    
+                    <input type="range" min="5000" max="20000" value="10000" step="1000" 
+                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary" 
+                           id="stepRange">
+                    
+                    <div class="flex justify-between mt-2">
+                        <span class="text-xs text-muted">5000</span>
+                        <span class="text-xs text-muted">10000</span>
+                        <span class="text-xs text-muted">15000</span>
+                        <span class="text-xs text-muted">20000</span>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <p class="text-sm text-dark mb-2">目标频率</p>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="bg-gray-100 rounded-lg py-2 text-center text-sm card-hover">每天</div>
+                            <div class="bg-primary/10 rounded-lg py-2 text-center text-sm text-primary font-medium border border-primary card-hover">工作日</div>
+                            <div class="bg-gray-100 rounded-lg py-2 text-center text-sm card-hover">周末</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 提醒设置 -->
+                <div class="glass rounded-2xl p-6 mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-dark">提醒设置</h3>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <p class="text-dark">晨间提醒</p>
+                            <p class="text-sm glass px-3 py-1 rounded-full">08:00</p>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <p class="text-dark">晚间提醒</p>
+                            <p class="text-sm glass px-3 py-1 rounded-full">20:00</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="w-full bg-primary text-white py-4 rounded-2xl font-medium text-lg glass card-hover">
+                    保存目标
+                </button>
+            </div>
+        </div>
+
+        <!-- 5. 个人中心页面 -->
+        <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden relative bg-[url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1000&auto=format')] bg-cover bg-center">
+            <!-- 状态栏 -->
+            <div class="h-14 glass px-4 flex justify-between items-center">
+                <div class="text-dark font-medium">9:41</div>
+                <div class="flex items-center gap-2">
+                    <i class="fa fa-signal text-dark"></i>
+                    <i class="fa fa-wifi text-dark"></i>
+                    <i class="fa fa-battery-full text-dark"></i>
+                </div>
+            </div>
+            
+            <!-- 个人中心内容 -->
+            <div class="h-[calc(100%-112px)] overflow-y-auto px-4 py-4">
+                <!-- 个人信息 -->
+                <div class="glass rounded-2xl p-6 mb-6">
+                    <div class="flex items-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format" 
+                             alt="用户头像" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-dark">张明</h2>
+                            <p class="text-sm text-muted">健康等级：优秀</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div>
+                            <p class="text-lg font-semibold text-dark">56</p>
+                            <p class="text-xs text-muted">已完成目标</p>
+                        </div>
+                        <div>
+                            <p class="text-lg font-semibold text-dark">12</p>
+                            <p class="text-xs text-muted">获得徽章</p>
+                        </div>
+                        <div>
+                            <p class="text-lg font-semibold text-dark">32天</p>
+                            <p class="text-xs text-muted">连续记录</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 功能菜单 -->
+                <div class="glass rounded-2xl p-4 mb-6">
+                    <div class="space-y-3">
+                        <div class="flex items-center p-2 rounded-lg hover:bg-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                <i class="fa fa-user text-blue-500"></i>
+                            </div>
+                            <p class="text-dark font-medium flex-1">个人资料</p>
+                            <i class="fa fa-chevron-right text-muted"></i>
+                        </div>
+                        <div class="flex items-center p-2 rounded-lg hover:bg-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
+                                <i class="fa fa-cog text-green-500"></i>
+                            </div>
+                            <p class="text-dark font-medium flex-1">设置</p>
+                            <i class="fa fa-chevron-right text-muted"></i>
+                        </div>
+                        <div class="flex items-center p-2 rounded-lg hover:bg-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center mr-3">
+                                <i class="fa fa-bookmark text-amber-500"></i>
+                            </div>
+                            <p class="text-dark font-medium flex-1">健康报告</p>
+                            <i class="fa fa-chevron-right text-muted"></i>
+                        </div>
+                        <div class="flex items-center p-2 rounded-lg hover:bg-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                                <i class="fa fa-share-alt text-purple-500"></i>
+                            </div>
+                            <p class="text-dark font-medium flex-1">数据分享</p>
+                            <i class="fa fa-chevron-right text-muted"></i>
+                        </div>
+                        <div class="flex items-center p-2 rounded-lg hover:bg-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                                <i class="fa fa-question-circle text-red-500"></i>
+                            </div>
+                            <p class="text-dark font-medium flex-1">帮助与支持</p>
+                            <i class="fa fa-chevron-right text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 会员卡片 -->
+                <div class="glass rounded-2xl p-6 mb-6 bg-gradient-to-r from-primary to-amber-400 text-white">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-bold text-xl mb-1">健康会员</h3>
+                            <p class="text-white/80 text-sm">解锁高级健康分析</p>
+                        </div>
+                        <div class="glass-dark rounded-full px-3 py-1 text-sm">
+                            立即开通
+                        </div>
+                    </div>
+                    <div class="mt-4 space-y-2">
+                        <div class="flex items-center">
+                            <i class="fa fa-check-circle mr-2"></i>
+                            <span class="text-sm">详细健康报告</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fa fa-check-circle mr-2"></i>
+                            <span class="text-sm">个性化健康建议</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fa fa-check-circle mr-2"></i>
+                            <span class="text-sm">无限制数据导出</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 退出登录 -->
+                <div class="glass rounded-2xl p-4">
+                    <div class="flex items-center p-2 rounded-lg hover:bg-red-50">
+                        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                            <i class="fa fa-sign-out text-red-500"></i>
+                        </div>
+                        <p class="text-red-500 font-medium flex-1">退出登录</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="h-16 glass absolute bottom-0 w-full flex justify-around items-center">
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                    <span class="text-xs">主页</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-stats"/></svg>
+                    <span class="text-xs">数据</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-target"/></svg>
+                    <span class="text-xs">目标</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-primary">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-profile"/></svg>
+                    <span class="text-xs">我的</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 6. 详情页面 -->
+        <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden relative bg-[url('https://images.unsplash.com/photo-1519455719718-07013f87d34f?q=80&w=1000&auto=format')] bg-cover bg-center">
+            <!-- 状态栏 -->
+            <div class="h-14 glass px-4 flex justify-between items-center">
+                <div class="text-dark font-medium">9:41</div>
+                <div class="flex items-center gap-2">
+                    <i class="fa fa-signal text-dark"></i>
+                    <i class="fa fa-wifi text-dark"></i>
+                    <i class="fa fa-battery-full text-dark"></i>
+                </div>
+            </div>
+            
+            <!-- 详情页面内容 -->
+            <div class="h-[calc(100%-112px)] overflow-y-auto px-4 py-4">
+                <div class="flex items-center mb-6">
+                    <a href="#" class="mr-4">
+                        <i class="fa fa-arrow-left text-dark"></i>
+                    </a>
+                    <h1 class="text-2xl font-bold text-dark">睡眠详情</h1>
+                </div>
+                
+                <!-- 睡眠概览 -->
+                <div class="glass rounded-2xl p-6 mb-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-muted text-sm">昨晚</p>
+                            <h2 class="text-3xl font-bold text-dark">7.5 小时</h2>
+                        </div>
+                        <div class="w-16 h-16 relative">
+                            <svg width="64" height="64" viewBox="0 0 64 64">
+                                <circle cx="32" cy="32" r="28" fill="none" stroke="#E5E7EB" stroke-width="4"/>
+                                <circle cx="32" cy="32" r="28" fill="none" stroke="#34D399" stroke-width="4" stroke-dasharray="175.84" stroke-dashoffset="44" class="progress-ring-circle"/>
+                                <text x="32" y="36" text-anchor="middle" font-size="12" font-weight="bold" fill="#1F2937">75%</text>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-2 text-center mb-4">
+                        <div>
+                            <p class="text-lg font-semibold text-dark">2.5h</p>
+                            <p class="text-xs text-muted">深度睡眠</p>
+                        </div>
+                        <div>
+                            <p class="text-lg font-semibold text-dark">4h</p>
+                            <p class="text-xs text-muted">浅度睡眠</p>
+                        </div>
+                        <div>
+                            <p class="text-lg font-semibold text-dark">1h</p>
+                            <p class="text-xs text-muted">REM</p>
+                        </div>
+                    </div>
+                    
+                    <div class="h-32">
+                        <canvas id="sleepChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- 睡眠质量分析 -->
+                <div class="glass rounded-2xl p-6 mb-6">
+                    <h3 class="font-bold text-dark mb-4">睡眠质量分析</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="text-sm text-dark">入睡时间</p>
+                                <p class="text-sm font-medium text-green-500">正常</p>
+                            </div>
+                            <p class="text-xs text-muted">22:30 (推荐时间：22:00-23:00)</p>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="text-sm text-dark">醒来次数</p>
+                                <p class="text-sm font-medium text-yellow-500">较多</p>
+                            </div>
+                            <p class="text-xs text-muted">3次 (推荐：0-1次)</p>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="text-sm text-dark">深度睡眠时间</p>
+                                <p class="text-sm font-medium text-red-500">不足</p>
+                            </div>
+                            <p class="text-xs text-muted">2.5小时 (推荐：3+小时)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 睡眠建议 -->
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="font-bold text-dark mb-4">改善建议</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                                <span class="text-blue-500 font-bold text-sm">1</span>
+                            </div>
+                            <div>
+                                <p class="text-dark font-medium">保持规律作息</p>
+                                <p class="text-xs text-muted">尽量每天在同一时间入睡和起床</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                                <span class="text-blue-500 font-bold text-sm">2</span>
+                            </div>
+                            <div>
+                                <p class="text-dark font-medium">睡前减少蓝光暴露</p>
+                                <p class="text-xs text-muted">睡前1小时避免使用电子设备</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                                <span class="text-blue-500 font-bold text-sm">3</span>
+                            </div>
+                            <div>
+                                <p class="text-dark font-medium">增加日间运动量</p>
+                                <p class="text-xs text-muted">每天至少30分钟中等强度运动</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="mt-6 w-full bg-primary/10 text-primary py-3 rounded-xl font-medium text-sm border border-primary card-hover">
+                        查看完整睡眠报告
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="h-16 glass absolute bottom-0 w-full flex justify-around items-center">
+                <a href="#" class="flex flex-col items-center text-primary">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                    <span class="text-xs">主页</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-stats"/></svg>
+                    <span class="text-xs">数据</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-target"/></svg>
+                    <span class="text-xs">目标</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-profile"/></svg>
+                    <span class="text-xs">我的</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 7. 健康报告页面 -->
+        <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden relative bg-[url('https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1000&auto=format')] bg-cover bg-center">
+            <!-- 状态栏 -->
+            <div class="h-14 glass px-4 flex justify-between items-center">
+                <div class="text-dark font-medium">9:41</div>
+                <div class="flex items-center gap-2">
+                    <i class="fa fa-signal text-dark"></i>
+                    <i class="fa fa-wifi text-dark"></i>
+                    <i class="fa fa-battery-full text-dark"></i>
+                </div>
+            </div>
+            
+            <!-- 健康报告内容 -->
+            <div class="h-[calc(100%-112px)] overflow-y-auto px-4 py-4">
+                <div class="flex items-center mb-6">
+                    <a href="#" class="mr-4">
+                        <i class="fa fa-arrow-left text-dark"></i>
+                    </a>
+                    <h1 class="text-2xl font-bold text-dark">健康周报</h1>
+                </div>
+                
+                <!-- 报告概览 -->
+                <div class="glass rounded-2xl p-6 mb-6 bg-gradient-to-r from-blue-50 to-indigo-50">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-dark">2023年第24周</h2>
+                        <div class="glass rounded-full px-3 py-1 text-sm flex items-center">
+                            <i class="fa fa-download text-primary mr-1"></i>
+                            导出PDF
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mx-auto mb-4">
+                        <span class="text-3xl font-bold text-green-600">85</span>
+                    </div>
+                    
+                    <p class="text-center text-lg font-medium text-dark mb-2">健康评分</p>
+                    <p class="text-center text-sm text-muted">优秀 · 相比上周提升3分</p>
+                </div>
+                
+                <!-- 健康指标总结 -->
+                <div class="glass rounded-2xl p-6 mb-6">
+                    <h3 class="font-bold text-dark mb-4">健康指标总结</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="text-sm text-dark">平均步数</p>
+                                <p class="text-sm font-medium text-dark">8,742 <span class="text-xs text-green-500">↑12%</span></p>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-primary h-1.5 rounded-full" style="width: 87%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="text-sm text-dark">平均睡眠</p>
+                                <p class="text-sm font-medium text-dark">7.2小时 <span class="text-xs text-green-500">↑5%</span></p>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-secondary h-1.5 rounded-full" style="width: 72%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="text-sm text-dark">平均心率</p>
+                                <p class="text-sm font-medium text-dark">72 bpm <span class="text-xs text-red-500">↓3%</span></p>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-red-400 h-1.5 rounded-full" style="width: 60%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="text-sm text-dark">活动天数</p>
+                                <p class="text-sm font-medium text-dark">6/7天 <span class="text-xs text-green-500">↑1天</span></p>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-amber-400 h-1.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 健康建议 -->
+                <div class="glass rounded-2xl p-6 mb-6">
+                    <h3 class="font-bold text-dark mb-4">健康建议</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex">
+                            <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                                <i class="fa fa-heartbeat text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="text-dark font-medium">心率管理</p>
+                                <p class="text-xs text-muted">您的静息心率略高，建议增加有氧运动和冥想练习</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                                <i class="fa fa-bed text-secondary"></i>
+                            </div>
+                            <div>
+                                <p class="text-dark font-medium">睡眠优化</p>
+                                <p class="text-xs text-muted">您的深度睡眠时间不足，建议睡前避免咖啡因摄入</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="w-8 h-8 rounded-full bg-amber-400/20 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                                <i class="fa fa-cutlery text-amber-500"></i>
+                            </div>
+                            <div>
+                                <p class="text-dark font-medium">饮食建议</p>
+                                <p class="text-xs text-muted">本周水分摄入不足，建议每天至少饮水2000ml</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 下周目标 -->
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="font-bold text-dark mb-4">下周目标</h3>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-gray-100 rounded-xl p-3 flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-2">
+                                <i class="fa fa-plus text-primary text-xs"></i>
+                            </div>
+                            <p class="text-sm font-medium text-dark">增加步数目标</p>
+                        </div>
+                        
+                        <div class="bg-gray-100 rounded-xl p-3 flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center mr-2">
+                                <i class="fa fa-plus text-secondary text-xs"></i>
+                            </div>
+                            <p class="text-sm font-medium text-dark">改善深度睡眠</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="h-16 glass absolute bottom-0 w-full flex justify-around items-center">
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-home"/></svg>
+                    <span class="text-xs">主页</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-stats"/></svg>
+                    <span class="text-xs">数据</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-muted">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-target"/></svg>
+                    <span class="text-xs">目标</span>
+                </a>
+                <a href="#" class="flex flex-col items-center text-primary">
+                    <svg class="w-6 h-6 mb-1"><use href="#icon-profile"/></svg>
+                    <span class="text-xs">我的</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 步数图表初始化
+        const stepsCtx = document.getElementById('stepsChart').getContext('2d');
+        const stepsChart = new Chart(stepsCtx, {
+            type: 'line',
+            data: {
+                labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                datasets: [{
+                    label: '步数',
+                    data: [8500, 7200, 9300, 8800, 10200, 7800, 9500],
+                    borderColor: '#FF9F40',
+                    backgroundColor: 'rgba(255, 159, 64, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#FFFFFF',
+                    pointBorderColor: '#FF9F40',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    pointStyle: 'circle',
+                    segment: {
+                        borderColor: ctx => ctx.p0.parsed.y === ctx.p1.parsed.y ? '#FF9F40' : '#FF9F40',
+                    }
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#1F2937',
+                        bodyColor: '#1F2937',
+                        borderColor: '#E5E7EB',
+                        borderWidth: 1,
+                        padding: 10,
+                        boxPadding: 5,
+                        usePointStyle: true,
+                        callbacks: {
+                            label: function(context) {
+                                return ` ${context.parsed.y} 步`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#9CA3AF'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#F3F4F6'
+                        },
+                        ticks: {
+                            color: '#9CA3AF',
+                            callback: function(value) {
+                                return value >= 1000 ? value / 1000 + 'k' : value;
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                elements: {
+                    line: {
+                        tension: 0.4
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+
+        // 睡眠图表初始化
+        const sleepCtx = document.getElementById('sleepChart').getContext('2d');
+        const sleepChart = new Chart(sleepCtx, {
+            type: 'bar',
+            data: {
+                labels: ['22:00', '23:00', '00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00'],
+                datasets: [
+                    {
+                        label: '深度睡眠',
+                        data: [0, 0.5, 0.8, 0.7, 0.5, 0, 0, 0.2, 0.3, 0],
+                        backgroundColor: '#34D399',
+                        borderRadius: 4,
+                        barPercentage: 0.8,
+                    },
+                    {
+                        label: '浅度睡眠',
+                        data: [0.2, 0.5, 0.2, 0.3, 0.5, 0.8, 0.8, 0.6, 0.4, 0.2],
+                        backgroundColor: '#9CA3AF',
+                        borderRadius: 4,
+                        barPercentage: 0.8,
+                    },
+                    {
+                        label: 'REM',
+                        data: [0, 0, 0, 0, 0, 0.2, 0.2, 0.2, 0.3, 0.3],
+                        backgroundColor: '#FF9F40',
+                        borderRadius: 4,
+                        barPercentage: 0.8,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#1F2937',
+                        bodyColor: '#1F2937',
+                        borderColor: '#E5E7EB',
+                        borderWidth: 1,
+                        padding: 10
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#9CA3AF',
+                            maxRotation: 0
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        grid: {
+                            color: '#F3F4F6'
+                        },
+                        ticks: {
+                            color: '#9CA3AF',
+                            callback: function(value) {
+                                return value + 'h';
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+
+        // 步数范围滑块交互
+        const stepRange = document.getElementById('stepRange');
+        const stepValue = document.getElementById('stepValue');
+        
+        if (stepRange && stepValue) {
+            stepRange.addEventListener('input', function() {
+                stepValue.textContent = this.value;
+            });
+        }
+    </script>
+</body>
+</html>

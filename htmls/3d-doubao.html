@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D立体UI设计模板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow-3d {
+                text-shadow: 1px 1px 0px #bbb, 2px 2px 0px #999, 3px 3px 0px #777;
+            }
+            .card-3d {
+                transform: perspective(1000px) rotateX(5deg) rotateY(-3deg);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .card-3d:hover {
+                transform: perspective(1000px) rotateX(3deg) rotateY(-1deg) translateY(-5px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+            }
+            .btn-3d {
+                transform: perspective(500px) translateZ(5px);
+                transition: transform 0.2s ease;
+            }
+            .btn-3d:hover {
+                transform: perspective(500px) translateZ(10px);
+            }
+            .icon-3d {
+                filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.2)) 
+                        drop-shadow(2px 2px 0px rgba(0,0,0,0.1));
+            }
+            .status-bar-3d {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            }
+            .tab-bar-3d {
+                background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.2);
+            }
+            .gradient-bg {
+                background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+            }
+            .gradient-bg-alt {
+                background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+            }
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#8B5CF6',
+                        accent: '#F59E0B',
+                        danger: '#EF4444',
+                        dark: '#1E293B',
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans flex flex-wrap justify-center gap-6 p-8">
+    <!-- SVG 图标定义 -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="hidden">
+        <symbol id="icon-home" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </symbol>
+        <symbol id="icon-stats" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </symbol>
+        <symbol id="icon-user" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </symbol>
+        <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
+        </symbol>
+    </svg>
+
+    <!-- 页面1：首页 -->
+    <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden bg-white shadow-2xl relative">
+        <!-- 状态栏 -->
+        <div class="status-bar-3d h-14 px-4 flex justify-between items-center text-white">
+            <div class="text-sm font-medium">9:41</div>
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-signal"></i>
+                <i class="fa fa-wifi"></i>
+                <i class="fa fa-battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="h-[calc(100%-140px)] overflow-y-auto px-5 pt-6 pb-20">
+            <!-- 头部 -->
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-[clamp(1.5rem,4vw,2rem)] font-bold text-dark text-shadow-3d">Dashboard</h1>
+                <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white shadow-lg icon-3d">
+                    <i class="fa fa-bell"></i>
+                </div>
+            </div>
+            
+            <!-- 欢迎卡片 -->
+            <div class="card-3d bg-white rounded-2xl p-6 mb-6 shadow-xl border border-gray-100">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-xl font-bold text-dark">Welcome back!</h2>
+                        <p class="text-gray-500 mt-1">Here's what's happening today</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full gradient-bg-alt flex items-center justify-center text-white shadow-md icon-3d">
+                        <i class="fa fa-star"></i>
+                    </div>
+                </div>
+                <div class="mt-4 gradient-bg text-white rounded-xl p-4 shadow-lg">
+                    <p class="font-medium">You have <span class="font-bold text-xl">3 new tasks</span> to complete today</p>
+                    <button class="mt-3 bg-white text-primary px-4 py-2 rounded-lg font-medium btn-3d">
+                        View Tasks
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 数据卡片 -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="card-3d bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+                    <div class="flex justify-between items-center">
+                        <p class="text-gray-500 text-sm">Total Revenue</p>
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-primary icon-3d">
+                            <i class="fa fa-line-chart"></i>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-bold mt-2">$15,690</p>
+                    <p class="text-green-500 text-sm mt-1">+12.5% <span class="text-gray-400">from last month</span></p>
+                </div>
+                
+                <div class="card-3d bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+                    <div class="flex justify-between items-center">
+                        <p class="text-gray-500 text-sm">Active Users</p>
+                        <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-secondary icon-3d">
+                            <i class="fa fa-users"></i>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-bold mt-2">2,453</p>
+                    <p class="text-green-500 text-sm mt-1">+8.2% <span class="text-gray-400">from last month</span></p>
+                </div>
+            </div>
+            
+            <!-- 最近活动 -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-dark">Recent Activity</h2>
+                    <button class="text-primary text-sm font-medium flex items-center">
+                        View All <svg class="w-4 h-4 ml-1 icon-3d"><use href="#icon-arrow-right"></use></svg>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="card-3d bg-white rounded-xl p-4 shadow-md border border-gray-100">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-500 icon-3d">
+                                <i class="fa fa-check"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-medium">Project completed</p>
+                                <p class="text-gray-500 text-sm">E-commerce redesign • 2 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-3d bg-white rounded-xl p-4 shadow-md border border-gray-100">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-primary icon-3d">
+                                <i class="fa fa-user-plus"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-medium">New client</p>
+                                <p class="text-gray-500 text-sm">Acme Corp • 5 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-3d bg-white rounded-xl p-4 shadow-md border border-gray-100">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-accent icon-3d">
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-medium">Deadline approaching</p>
+                                <p class="text-gray-500 text-sm">Mobile app launch • Tomorrow</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 快速操作 -->
+            <div>
+                <h2 class="text-lg font-bold text-dark mb-4">Quick Actions</h2>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="card-3d gradient-bg text-white rounded-xl p-4 flex flex-col items-center justify-center shadow-lg">
+                        <i class="fa fa-plus-circle text-2xl mb-2 icon-3d"></i>
+                        <p class="text-sm font-medium">New Task</p>
+                    </div>
+                    <div class="card-3d bg-purple-500 text-white rounded-xl p-4 flex flex-col items-center justify-center shadow-lg">
+                        <i class="fa fa-calendar text-2xl mb-2 icon-3d"></i>
+                        <p class="text-sm font-medium">Schedule</p>
+                    </div>
+                    <div class="card-3d bg-accent text-white rounded-xl p-4 flex flex-col items-center justify-center shadow-lg">
+                        <i class="fa fa-comments text-2xl mb-2 icon-3d"></i>
+                        <p class="text-sm font-medium">Messages</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="tab-bar-3d h-16 absolute bottom-0 left-0 right-0 flex justify-around items-center">
+            <a href="#" class="flex flex-col items-center text-primary">
+                <svg class="w-6 h-6 icon-3d"><use href="#icon-home"></use></svg>
+                <span class="text-xs mt-1">Home</span>
+            </a>
+            <a href="#" class="flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6 icon-3d"><use href="#icon-stats"></use></svg>
+                <span class="text-xs mt-1">Stats</span>
+            </a>
+            <a href="#" class="flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6 icon-3d"><use href="#icon-user"></use></svg>
+                <span class="text-xs mt-1">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 页面2：数据可视化页面 -->
+    <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden bg-white shadow-2xl relative">
+        <!-- 状态栏 -->
+        <div class="status-bar-3d h-14 px-4 flex justify-between items-center text-white">
+            <div class="text-sm font-medium">9:41</div>
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-signal"></i>
+                <i class="fa fa-wifi"></i>
+                <i class="fa fa-battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="h-[calc(100%-140px)] overflow-y-auto px-5 pt-6 pb-20">
+            <!-- 头部 -->
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-[clamp(1.5rem,4vw,2rem)] font-bold text-dark text-shadow-3d">Analytics</h1>
+                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-dark shadow-lg icon-3d">
+                    <i class="fa fa-filter"></i>
+                </div>
+            </div>
+            
+            <!-- 时间筛选 -->
+            <div class="card-3d bg-white rounded-xl p-4 shadow-lg border border-gray-100 mb-6">
+                <div class="flex justify-between items-center">
+                    <button class="px-4 py-2 rounded-lg gradient-bg text-white font-medium btn-3d">Week</button>
+                    <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-500 font-medium">Month</button>
+                    <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-500 font-medium">Year</button>
+                </div>
+            </div>
+            
+            <!-- 图表区域 -->
+            <div class="card-3d bg-white rounded-2xl p-4 shadow-xl border border-gray-100 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-dark">Revenue Trends</h2>
+                    <button class="text-gray-400">
+                        <i class="fa fa-ellipsis-v"></i>
+                    </button>
+                </div>
+                <div class="h-64">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- 饼图区域 -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="card-3d bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">Traffic Sources</h3>
+                    <div class="h-40">
+                        <canvas id="sourcesChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card-3d bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">Conversion Rate</h3>
+                    <div class="h-40">
+                        <canvas id="conversionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 关键指标 -->
+            <div class="card-3d bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
+                <h2 class="text-lg font-bold text-dark mb-4">Key Performance Indicators</h2>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-500">Page Views</p>
+                            <p class="text-xl font-bold">248,934</p>
+                        </div>
+                        <p class="text-green-500 font-medium">+12.8%</p>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-500">Conversion Rate</p>
+                            <p class="text-xl font-bold">5.24%</p>
+                        </div>
+                        <p class="text-green-500 font-medium">+2.3%</p>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-secondary h-2 rounded-full" style="width: 52%"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-500">Bounce Rate</p>
+                            <p class="text-xl font-bold">28.3%</p>
+                        </div>
+                        <p class="text-red-500 font-medium">-1.2%</p>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-accent h-2 rounded-full" style="width: 28%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="tab-bar-3d h-16 absolute bottom-0 left-0 right-0 flex justify-around items-center">
+            <a href="#" class="flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6 icon-3d"><use href="#icon-home"></use></svg>
+                <span class="text-xs mt-1">Home</span>
+            </a>
+            <a href="#" class="flex flex-col items-center text-primary">
+                <svg class="w-6 h-6 icon-3d"><use href="#icon-stats"></use></svg>
+                <span class="text-xs mt-1">Stats</span>
+            </a>
+            <a href="#" class="flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6 icon-3d"><use href="#icon-user"></use></svg>
+                <span class="text-xs mt-1">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 页面3：个人中心 -->
+    <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden bg-white shadow-2xl relative">
+        <!-- 状态栏 -->
+        <div class="status-bar-3d h-14 px-4 flex justify-between items-center text-white">
+            <div class="text-sm font-medium">9:41</div>
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-signal"></i>
+                <i class="fa fa-wifi"></i>
+                <i class="fa fa-battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="h-[calc(100%-140px)] overflow-y-auto px-5 pt-6 pb-20">
+            <!-- 个人信息头部 -->
+            <div class="card-3d gradient-bg rounded-2xl p-6 shadow-xl mb-6 text-white">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h1 class="text-2xl font-bold">Alex Morgan</h1>
+                        <p class="opacity-80">Product Designer</p>
+                    </div>
+                    <button class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center icon-3d">
+                        <i class="fa fa-cog"></i>
+                    </button>
+                </div>
+                
+                <div class="flex items-center mt-4">
+                    <div class="w-16 h-16 rounded-full border-4 border-white/30 overflow-hidden">
+                        <img src="https://picsum.photos/id/64/200/200" alt="Profile picture" class="w-full h-full object-cover">
+                    </div>
+                    <div class="ml-4">
+                        <button class="bg-white text-primary px-4 py-2 rounded-lg font-medium btn-3d">
+                            Edit Profile
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-4 mt-6">
+                    <div class="text-center">
+                        <p class="text-xl font-bold">124</p>
+                        <p class="text-sm opacity-80">Projects</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xl font-bold">89%</p>
+                        <p class="text-sm opacity-80">Completion</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xl font-bold">14</p>
+                        <p class="text-sm opacity-80">Awards</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 功能菜单 -->
+            <div class="card-3d bg-white rounded-2xl shadow-xl border border-gray-100 mb-6">
+                <div class="p-4 border-b border-gray-100">
+                    <h2 class="text-lg font-bold text-dark">Account Settings</h2>
+                </div>
+                
+                <div class="divide-y divide-gray-100">
+                    <a href="#" class="flex justify-between items-center p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-primary icon-3d">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <span class="ml-3 font-medium">Personal Info</span>
+                        </div>
+                        <i class="fa fa-chevron-right text-gray-400"></i>
+                    </a>
+                    
+                    <a href="#" class="flex justify-between items-center p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-secondary icon-3d">
+                                <i class="fa fa-bell"></i>
+                            </div>
+                            <span class="ml-3 font-medium">Notifications</span>
+                        </div>
+                        <i class="fa fa-chevron-right text-gray-400"></i>
+                    </a>
+                    
+                    <a href="#" class="flex justify-between items-center p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-500 icon-3d">
+                                <i class="fa fa-lock"></i>
+                            </div>
+                            <span class="ml-3 font-medium">Privacy & Security</span>
+                        </div>
+                        <i class="fa fa-chevron-right text-gray-400"></i>
+                    </a>
+                    
+                    <a href="#" class="flex justify-between items-center p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-accent icon-3d">
+                                <i class="fa fa-language"></i>
+                            </div>
+                            <span class="ml-3 font-medium">Language & Region</span>
+                        </div>
+                        <i class="fa fa-chevron-right text-gray-400"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 会员卡片 -->
+            <div class="card-3d bg-gradient-to-br from-accent to-danger rounded-2xl p-6 shadow-xl mb-6 text-white">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-xl font-bold">Pro Membership</h2>
+                        <p class="opacity-80 mt-1">Upgrade to unlock premium features</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center icon-3d">
+                        <i class="fa fa-crown"></i>
+                    </div>
+                </div>
+                
+                <button class="mt-4 bg-white text-accent px-5 py-2 rounded-lg font-medium btn-3d w-full">
+                    Upgrade Now
+                </button>
+            </div>
+            
+            <!-- 帮助与支持 -->
+            <div class="card-3d bg-white rounded-2xl shadow-xl border border-gray-100">
+                <div class="p-4 border-b border-gray-100">
+                    <h2 class="text-lg font-bold text-dark">Help & Support</h2>
+                </div>
+                
+                <div class="divide-y divide-gray-100">
+                    <a href="#" class="flex justify-between items-center p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-primary icon-3d">
+                                <i class="fa fa-life-ring"></i>
+                            </div>
+                            <span class="ml-3 font-medium">Help Center</span>
+                        </div>
+                        <i class="fa fa-chevron-right text-gray-400"></i>
+                    </a>
+                    
+                    <a href="#" class="flex justify-between items-center p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-secondary icon-3d">
+                                <i class="fa fa-question-circle"></i>
+                            </div>
+                            <span class="ml-3 font-medium">FAQ</span>
+                        </div>
+                        <i class="fa fa-chevron-right text-gray-400"></i>
+                    </a>
+                    
+                    <a href="#" class="flex justify-between items-center p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-danger icon-3d">
+                                <i class="fa fa-sign-out"></i>
+                            </div>
+                            <span class="ml-3 font-medium">Sign Out</span>
+                        </div>
+                        <i class="fa fa-chevron-right text-gray-400"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="tab-bar-3d h-16 absolute bottom-0 left-0 right-0 flex justify-around items-center">
+            <a href="#" class="flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6 icon-3d"><use href="#icon-home"></use></svg>
+                <span class="text-xs mt-1">Home</span>
+            </a>
+            <a href="#" class="flex flex-col items-center text-gray-400">
+                <svg class="w-6 h-6 icon-3d"><use href="#icon-stats"></use></svg>
+                <span class="text-xs mt-1">Stats</span>
+            </a>
+            <a href="#" class="flex flex-col items-center text-primary">
+                <svg class="w-6 h-6 icon-3d"><use href="#icon-user"></use></svg>
+                <span class="text-xs mt-1">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 图表初始化脚本 -->
+    <script>
+        // 等待DOM加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            // 收入趋势图表
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            const revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [1200, 1900, 1500, 2500, 2200, 3000, 3200],
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#3B82F6',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                            titleFont: {
+                                family: 'Poppins',
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                family: 'Poppins'
+                            },
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 流量来源图表
+            const sourcesCtx = document.getElementById('sourcesChart').getContext('2d');
+            const sourcesChart = new Chart(sourcesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Direct', 'Social', 'Search', 'Referral'],
+                    datasets: [{
+                        data: [35, 25, 30, 10],
+                        backgroundColor: [
+                            '#3B82F6',
+                            '#8B5CF6',
+                            '#F59E0B',
+                            '#10B981'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 15,
+                                font: {
+                                    family: 'Poppins',
+                                    size: 10
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+            
+            // 转化率图表
+            const conversionCtx = document.getElementById('conversionChart').getContext('2d');
+            const conversionChart = new Chart(conversionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                    datasets: [{
+                        label: 'Conversion Rate',
+                        data: [3.2, 4.1, 3.8, 4.9, 5.2],
+                        backgroundColor: [
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(139, 92, 246, 0.9)'
+                        ],
+                        borderRadius: 6,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

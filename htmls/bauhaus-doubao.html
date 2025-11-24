@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>包豪斯风格UI设计</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .bauhaus-shadow {
+                box-shadow: 4px 4px 0px #000;
+            }
+            .bauhaus-hover {
+                transition: all 0.2s ease;
+            }
+            .bauhaus-hover:hover {
+                transform: translate(-2px, -2px);
+                box-shadow: 6px 6px 0px #000;
+            }
+            .bauhaus-card {
+                border: 2px solid #000;
+                background-color: #fff;
+            }
+            .status-bar {
+                height: 44px;
+                background-color: #f8f9fa;
+                border-bottom: 1px solid #000;
+            }
+            .tab-bar {
+                height: 50px;
+                border-top: 2px solid #000;
+                background-color: #f8f9fa;
+            }
+            .tab-active {
+                border-top: 4px solid #000;
+                color: #0000FF;
+            }
+            .geometric-shape {
+                position: absolute;
+                z-index: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex flex-wrap justify-center gap-6 p-6">
+        <!-- 首页 -->
+        <div class="relative w-[375px] h-[812px] border-2 border-black bg-white overflow-hidden shadow-lg">
+            <!-- 状态栏 -->
+            <div class="status-bar flex justify-between items-center px-4">
+                <span class="font-bold text-sm">9:41</span>
+                <div class="flex gap-2">
+                    <i class="fa fa-signal"></i>
+                    <i class="fa fa-wifi"></i>
+                    <i class="fa fa-battery-full"></i>
+                </div>
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="h-[718px] overflow-y-auto pb-[50px]">
+                <!-- 头部 -->
+                <div class="p-6 border-b-2 border-black">
+                    <h1 class="text-3xl font-bold mb-2">BAUHAUS</h1>
+                    <p class="text-gray-600">形式服务功能</p>
+                </div>
+                
+                <!-- 几何装饰元素 -->
+                <div class="geometric-shape w-20 h-20 bg-yellow-300 -top-5 -right-5 rotate-12"></div>
+                <div class="geometric-shape w-16 h-16 bg-red-500 bottom-20 left-10 rotate-45"></div>
+                <div class="geometric-shape w-24 h-4 bg-blue-500 top-40 right-10"></div>
+                
+                <!-- 卡片区域 -->
+                <div class="p-4">
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover rounded-none mb-6 p-6 relative">
+                        <h2 class="text-xl font-bold mb-4">几何美学</h2>
+                        <p class="mb-4">包豪斯设计强调简洁的几何形状和功能性，去除不必要的装饰元素。</p>
+                        <div class="flex gap-2">
+                            <div class="w-8 h-8 bg-red-500"></div>
+                            <div class="w-8 h-8 bg-blue-500"></div>
+                            <div class="w-8 h-8 bg-yellow-300"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover rounded-none mb-6 p-6">
+                        <h2 class="text-xl font-bold mb-4">设计原则</h2>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <div class="w-4 h-4 bg-black mr-2"></div>
+                                功能优先
+                            </li>
+                            <li class="flex items-center">
+                                <div class="w-4 h-4 bg-black mr-2"></div>
+                                几何纯粹
+                            </li>
+                            <li class="flex items-center">
+                                <div class="w-4 h-4 bg-black mr-2"></div>
+                                材料真实
+                            </li>
+                            <li class="flex items-center">
+                                <div class="w-4 h-4 bg-black mr-2"></div>
+                                形式简洁
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover rounded-none p-6">
+                        <h2 class="text-xl font-bold mb-4">数据可视化</h2>
+                        <div class="h-48">
+                            <canvas id="bauhausChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="tab-bar absolute bottom-0 left-0 right-0 flex">
+                <div class="tab-active flex-1 flex flex-col items-center justify-center">
+                    <i class="fa fa-home"></i>
+                    <span class="text-xs font-bold">首页</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center justify-center">
+                    <i class="fa fa-th"></i>
+                    <span class="text-xs">分类</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center justify-center">
+                    <i class="fa fa-user"></i>
+                    <span class="text-xs">我的</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 分类页 -->
+        <div class="relative w-[375px] h-[812px] border-2 border-black bg-white overflow-hidden shadow-lg">
+            <!-- 状态栏 -->
+            <div class="status-bar flex justify-between items-center px-4">
+                <span class="font-bold text-sm">9:43</span>
+                <div class="flex gap-2">
+                    <i class="fa fa-signal"></i>
+                    <i class="fa fa-wifi"></i>
+                    <i class="fa fa-battery-full"></i>
+                </div>
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="h-[718px] overflow-y-auto pb-[50px]">
+                <!-- 头部 -->
+                <div class="p-6 border-b-2 border-black flex justify-between items-center">
+                    <h1 class="text-3xl font-bold">分类</h1>
+                    <button class="bauhaus-card bauhaus-shadow bauhaus-hover px-3 py-1 text-sm">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+                
+                <!-- 几何装饰元素 -->
+                <div class="geometric-shape w-24 h-24 bg-blue-500 top-20 right-0 rounded-full opacity-20"></div>
+                <div class="geometric-shape w-32 h-4 bg-red-500 bottom-40 left-0"></div>
+                
+                <!-- 分类网格 -->
+                <div class="p-4 grid grid-cols-2 gap-4">
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover h-40 flex flex-col justify-center items-center p-4">
+                        <div class="w-16 h-16 bg-red-500 mb-3 flex items-center justify-center">
+                            <i class="fa fa-cube text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold">几何形状</h3>
+                    </div>
+                    
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover h-40 flex flex-col justify-center items-center p-4">
+                        <div class="w-16 h-16 bg-blue-500 mb-3 flex items-center justify-center">
+                            <i class="fa fa-paint-brush text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold">色彩理论</h3>
+                    </div>
+                    
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover h-40 flex flex-col justify-center items-center p-4">
+                        <div class="w-16 h-16 bg-yellow-300 mb-3 flex items-center justify-center">
+                            <i class="fa fa-font text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold">字体设计</h3>
+                    </div>
+                    
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover h-40 flex flex-col justify-center items-center p-4">
+                        <div class="w-16 h-16 bg-gray-800 mb-3 flex items-center justify-center">
+                            <i class="fa fa-cogs text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold">功能设计</h3>
+                    </div>
+                </div>
+                
+                <!-- 内容列表 -->
+                <div class="p-4">
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover mb-4 p-4 flex">
+                        <div class="w-16 h-16 bg-gray-100 mr-4 flex-shrink-0"></div>
+                        <div>
+                            <h3 class="font-bold">包豪斯建筑</h3>
+                            <p class="text-sm text-gray-600">现代主义建筑的典范</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover mb-4 p-4 flex">
+                        <div class="w-16 h-16 bg-gray-100 mr-4 flex-shrink-0"></div>
+                        <div>
+                            <h3 class="font-bold">工业设计</h3>
+                            <p class="text-sm text-gray-600">功能性与美学的结合</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover p-4 flex">
+                        <div class="w-16 h-16 bg-gray-100 mr-4 flex-shrink-0"></div>
+                        <div>
+                            <h3 class="font-bold">平面设计</h3>
+                            <p class="text-sm text-gray-600">简洁的视觉语言</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="tab-bar absolute bottom-0 left-0 right-0 flex">
+                <div class="flex-1 flex flex-col items-center justify-center">
+                    <i class="fa fa-home"></i>
+                    <span class="text-xs">首页</span>
+                </div>
+                <div class="tab-active flex-1 flex flex-col items-center justify-center">
+                    <i class="fa fa-th"></i>
+                    <span class="text-xs font-bold">分类</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center justify-center">
+                    <i class="fa fa-user"></i>
+                    <span class="text-xs">我的</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 个人中心页 -->
+        <div class="relative w-[375px] h-[812px] border-2 border-black bg-white overflow-hidden shadow-lg">
+            <!-- 状态栏 -->
+            <div class="status-bar flex justify-between items-center px-4">
+                <span class="font-bold text-sm">9:45</span>
+                <div class="flex gap-2">
+                    <i class="fa fa-signal"></i>
+                    <i class="fa fa-wifi"></i>
+                    <i class="fa fa-battery-full"></i>
+                </div>
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="h-[718px] overflow-y-auto pb-[50px]">
+                <!-- 用户信息 -->
+                <div class="p-6 border-b-2 border-black bg-gray-100">
+                    <div class="flex items-center mb-4">
+                        <div class="w-16 h-16 bg-gray-300 border-2 border-black mr-4"></div>
+                        <div>
+                            <h2 class="text-xl font-bold">包豪斯用户</h2>
+                            <p class="text-sm">bauhaus@design.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover p-3 flex justify-between">
+                        <div class="text-center">
+                            <p class="font-bold text-lg">12</p>
+                            <p class="text-xs">收藏</p>
+                        </div>
+                        <div class="w-px h-8 bg-gray-300"></div>
+                        <div class="text-center">
+                            <p class="font-bold text-lg">24</p>
+                            <p class="text-xs">作品</p>
+                        </div>
+                        <div class="w-px h-8 bg-gray-300"></div>
+                        <div class="text-center">
+                            <p class="font-bold text-lg">8</p>
+                            <p class="text-xs">关注</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 几何装饰元素 -->
+                <div class="geometric-shape w-16 h-16 bg-yellow-300 top-40 right-10 rotate-12"></div>
+                <div class="geometric-shape w-20 h-4 bg-red-500 bottom-60 left-0"></div>
+                
+                <!-- 功能列表 -->
+                <div class="p-4">
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover mb-2">
+                        <div class="p-4 flex justify-between items-center border-b border-gray-200">
+                            <div class="flex items-center">
+                                <i class="fa fa-heart-o mr-3 text-red-500"></i>
+                                <span>我的收藏</span>
+                            </div>
+                            <i class="fa fa-chevron-right text-gray-400"></i>
+                        </div>
+                        
+                        <div class="p-4 flex justify-between items-center border-b border-gray-200">
+                            <div class="flex items-center">
+                                <i class="fa fa-bookmark-o mr-3 text-blue-500"></i>
+                                <span>我的作品</span>
+                            </div>
+                            <i class="fa fa-chevron-right text-gray-400"></i>
+                        </div>
+                        
+                        <div class="p-4 flex justify-between items-center border-b border-gray-200">
+                            <div class="flex items-center">
+                                <i class="fa fa-cog mr-3 text-gray-800"></i>
+                                <span>设置</span>
+                            </div>
+                            <i class="fa fa-chevron-right text-gray-400"></i>
+                        </div>
+                        
+                        <div class="p-4 flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fa fa-question-circle-o mr-3 text-yellow-500"></i>
+                                <span>关于</span>
+                            </div>
+                            <i class="fa fa-chevron-right text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- 推荐内容 -->
+                    <h3 class="font-bold mt-6 mb-3">推荐设计师</h3>
+                    
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover mb-3 p-4 flex items-center">
+                        <div class="w-12 h-12 bg-gray-200 border border-black mr-3"></div>
+                        <div class="flex-1">
+                            <p class="font-bold">Walter Gropius</p>
+                            <p class="text-xs text-gray-600">包豪斯创始人</p>
+                        </div>
+                        <button class="bauhaus-card bauhaus-shadow px-2 py-1 text-xs">
+                            关注
+                        </button>
+                    </div>
+                    
+                    <div class="bauhaus-card bauhaus-shadow bauhaus-hover p-4 flex items-center">
+                        <div class="w-12 h-12 bg-gray-200 border border-black mr-3"></div>
+                        <div class="flex-1">
+                            <p class="font-bold">Marcel Breuer</p>
+                            <p class="text-xs text-gray-600">家具设计师</p>
+                        </div>
+                        <button class="bauhaus-card bauhaus-shadow px-2 py-1 text-xs">
+                            关注
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="tab-bar absolute bottom-0 left-0 right-0 flex">
+                <div class="flex-1 flex flex-col items-center justify-center">
+                    <i class="fa fa-home"></i>
+                    <span class="text-xs">首页</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center justify-center">
+                    <i class="fa fa-th"></i>
+                    <span class="text-xs">分类</span>
+                </div>
+                <div class="tab-active flex-1 flex flex-col items-center justify-center">
+                    <i class="fa fa-user"></i>
+                    <span class="text-xs font-bold">我的</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- SVG 符号定义 -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="square" viewBox="0 0 24 24">
+            <rect width="24" height="24" fill="currentColor" />
+        </symbol>
+        <symbol id="circle" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" fill="currentColor" />
+        </symbol>
+        <symbol id="triangle" viewBox="0 0 24 24">
+            <polygon points="12,2 22,22 2,22" fill="currentColor" />
+        </symbol>
+    </svg>
+    
+    <script>
+        // 初始化图表
+        const ctx = document.getElementById('bauhausChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['几何', '色彩', '功能', '材质', '形式'],
+                    datasets: [{
+                        label: '设计元素',
+                        data: [90, 85, 95, 75, 80],
+                        backgroundColor: [
+                            '#FF0000',
+                            '#0000FF',
+                            '#FFFF00',
+                            '#000000',
+                            '#808080'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#000'
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false
+                            },
+                            border: {
+                                display: true,
+                                width: 2
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            border: {
+                                display: true,
+                                width: 2
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 添加几何形状动画
+        document.querySelectorAll('.geometric-shape').forEach(shape => {
+            const animateShape = () => {
+                const rotation = Math.random() * 360;
+                const scale = 0.8 + Math.random() * 0.4;
+                
+                shape.style.transition = 'all 3s ease';
+                shape.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+                
+                setTimeout(animateShape, 3000 + Math.random() * 2000);
+            };
+            
+            animateShape();
+        });
+    </script>
+</body>
+</html>

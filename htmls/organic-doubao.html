@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自然有机UI设计模板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+        }
+        
+        .organic-card {
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .organic-card:hover {
+            transform: translateY(-5px);
+            filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.1));
+        }
+        
+        .organic-shape {
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        }
+        
+        .organic-shape-2 {
+            border-radius: 40% 60% 70% 30% / 30% 50% 50% 70%;
+        }
+        
+        .plant-animation {
+            animation: sway 8s ease-in-out infinite alternate;
+            transform-origin: bottom;
+        }
+        
+        @keyframes sway {
+            0% { transform: rotate(-3deg); }
+            100% { transform: rotate(3deg); }
+        }
+        
+        .water-animation {
+            animation: ripple 4s ease-in-out infinite;
+        }
+        
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .progress-ring circle {
+            transition: stroke-dashoffset 0.5s ease;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #228B22;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-item:hover::after {
+            width: 100%;
+        }
+        
+        .scroll-indicator {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body class="bg-[#f8f5f0]">
+    <!-- SVG图标定义 -->
+    <svg width="0" height="0" class="hidden">
+        <symbol id="icon-home" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </symbol>
+        <symbol id="icon-explore" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm7-7H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-1.75 9c0 2.9-2.35 5.25-5.25 5.25S6.75 14.9 6.75 12 9.1 6.75 12 6.75 17.25 9.1 17.25 12z"/>
+        </symbol>
+        <symbol id="icon-profile" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </symbol>
+        <symbol id="icon-detail" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.9 2 1.99 2 2-.9 2-2-.9-2-2-2zm-9.83-3.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.86-7.01L19.42 4h-.01l-1.1 2-2.76 5H8.53l-.13-.27L6.16 6l-.95-2-.94-2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.13 0-.25-.11-.25-.25z"/>
+        </symbol>
+    </svg>
+
+    <!-- 页面容器 - 每行3个页面 -->
+    <div class="flex flex-wrap justify-center gap-6 p-6">
+        <!-- 首页 -->
+        <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden relative bg-white shadow-lg">
+            <!-- 状态栏 -->
+            <div class="bg-[#228B22] text-white p-2 flex justify-between px-4">
+                <span>9:41</span>
+                <div class="flex gap-2">
+                    <i class="fa fa-signal"></i>
+                    <i class="fa fa-wifi"></i>
+                    <i class="fa fa-battery-full"></i>
+                </div>
+            </div>
+            
+            <!-- 主内容区 - 可滚动 -->
+            <div class="h-[calc(100%-120px)] overflow-y-auto pb-20">
+                <!-- 头部区域 -->
+                <div class="relative h-64 bg-gradient-to-br from-[#228B22] to-[#32CD32] rounded-b-[3rem] flex flex-col justify-between p-6 text-white">
+                    <div class="flex justify-between items-center">
+                        <h1 class="text-2xl font-bold">自然生活</h1>
+                        <div class="flex gap-3">
+                            <button class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            <button class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                <i class="fa fa-bell"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">发现自然之美</h2>
+                        <p class="text-white/80">探索有机生活方式，感受自然力量</p>
+                    </div>
+                    
+                    <!-- 装饰植物SVG -->
+                    <svg class="absolute bottom-0 right-0 w-32 h-32 plant-animation" viewBox="0 0 100 100">
+                        <path d="M50,100 C50,70 30,50 50,30 C70,50 50,70 50,100" fill="none" stroke="#ffffff" stroke-width="2"/>
+                        <circle cx="50" cy="30" r="5" fill="#ffffff"/>
+                        <path d="M50,30 C60,20 70,10 75,20" fill="none" stroke="#ffffff" stroke-width="2"/>
+                        <path d="M50,30 C40,20 30,10 25,20" fill="none" stroke="#ffffff" stroke-width="2"/>
+                    </svg>
+                </div>
+                
+                <!-- 分类导航 -->
+                <div class="px-6 py-4">
+                    <div class="flex justify-between items-center overflow-x-auto pb-2 gap-4">
+                        <div class="nav-item flex flex-col items-center min-w-[60px]">
+                            <div class="w-12 h-12 rounded-full bg-[#f0f8f0] flex items-center justify-center text-[#228B22] mb-1">
+                                <i class="fa fa-leaf text-xl"></i>
+                            </div>
+                            <span class="text-sm">植物</span>
+                        </div>
+                        <div class="nav-item flex flex-col items-center min-w-[60px]">
+                            <div class="w-12 h-12 rounded-full bg-[#f0f8f0] flex items-center justify-center text-[#8B4513] mb-1">
+                                <i class="fa fa-seedling text-xl"></i>
+                            </div>
+                            <span class="text-sm">园艺</span>
+                        </div>
+                        <div class="nav-item flex flex-col items-center min-w-[60px]">
+                            <div class="w-12 h-12 rounded-full bg-[#f0f8f0] flex items-center justify-center text-[#87CEEB] mb-1">
+                                <i class="fa fa-tint text-xl"></i>
+                            </div>
+                            <span class="text-sm">水源</span>
+                        </div>
+                        <div class="nav-item flex flex-col items-center min-w-[60px]">
+                            <div class="w-12 h-12 rounded-full bg-[#f0f8f0] flex items-center justify-center text-[#FFB6C1] mb-1">
+                                <i class="fa fa-pagelines text-xl"></i>
+                            </div>
+                            <span class="text-sm">花卉</span>
+                        </div>
+                        <div class="nav-item flex flex-col items-center min-w-[60px]">
+                            <div class="w-12 h-12 rounded-full bg-[#f0f8f0] flex items-center justify-center text-[#FFD700] mb-1">
+                                <i class="fa fa-sun-o text-xl"></i>
+                            </div>
+                            <span class="text-sm">阳光</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 精选内容 -->
+                <div class="px-6 py-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">精选推荐</h3>
+                        <a href="#" class="text-[#228B22] text-sm">查看全部</a>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="organic-card bg-gradient-to-br from-[#e8f5e8] to-[#f0f8f0] p-4 relative overflow-hidden">
+                            <img src="https://picsum.photos/seed/plant1/300/200" alt="有机植物" class="w-full h-32 object-cover rounded-xl mb-3">
+                            <h4 class="font-semibold">室内绿植指南</h4>
+                            <p class="text-xs text-gray-600 mt-1">打造舒适的居家环境</p>
+                            <div class="absolute top-3 right-3 bg-white/80 rounded-full px-2 py-1 text-xs text-[#228B22]">热门</div>
+                        </div>
+                        
+                        <div class="organic-card bg-gradient-to-br from-[#f5e8e8] to-[#f8f0f0] p-4 relative overflow-hidden">
+                            <img src="https://picsum.photos/seed/garden1/300/200" alt="园艺技巧" class="w-full h-32 object-cover rounded-xl mb-3">
+                            <h4 class="font-semibold">阳台园艺技巧</h4>
+                            <p class="text-xs text-gray-600 mt-1">小空间大利用</p>
+                            <div class="absolute top-3 right-3 bg-white/80 rounded-full px-2 py-1 text-xs text-[#8B4513]">新发布</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 特色内容 -->
+                <div class="px-6 py-4">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">自然生活方式</h3>
+                    
+                    <div class="organic-card bg-white border border-gray-100 p-5 mb-4 relative overflow-hidden">
+                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-[#228B22]/5 rounded-full"></div>
+                        <div class="absolute -left-5 -bottom-5 w-20 h-20 bg-[#87CEEB]/5 rounded-full"></div>
+                        
+                        <div class="flex gap-4">
+                            <div class="organic-shape w-20 h-20 bg-[#e8f5e8] flex-shrink-0 overflow-hidden">
+                                <img src="https://picsum.photos/seed/lifestyle1/100/100" alt="自然生活" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">有机食材与健康饮食</h4>
+                                <p class="text-sm text-gray-600 mt-1">了解如何选择和使用有机食材，提升生活品质</p>
+                                <div class="flex items-center mt-2">
+                                    <span class="text-xs text-[#228B22]">阅读时间: 5分钟</span>
+                                    <span class="mx-2">•</span>
+                                    <span class="text-xs text-gray-500">2天前</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="organic-card bg-white border border-gray-100 p-5 relative overflow-hidden">
+                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-[#8B4513]/5 rounded-full"></div>
+                        
+                        <div class="flex gap-4">
+                            <div class="organic-shape-2 w-20 h-20 bg-[#f5e8e8] flex-shrink-0 overflow-hidden">
+                                <img src="https://picsum.photos/seed/lifestyle2/100/100" alt="可持续生活" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">可持续生活实践</h4>
+                                <p class="text-sm text-gray-600 mt-1">从小事做起，为地球减负的10种方法</p>
+                                <div class="flex items-center mt-2">
+                                    <span class="text-xs text-[#8B4513]">阅读时间: 8分钟</span>
+                                    <span class="mx-2">•</span>
+                                    <span class="text-xs text-gray-500">5天前</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 滚动指示器 -->
+                <div class="flex justify-center py-4">
+                    <div class="scroll-indicator w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center">
+                        <i class="fa fa-chevron-down text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-3 px-6">
+                <div class="flex justify-around">
+                    <button class="flex flex-col items-center text-[#228B22]">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-home"></use>
+                        </svg>
+                        <span class="text-xs">首页</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-explore"></use>
+                        </svg>
+                        <span class="text-xs">探索</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <div class="w-12 h-12 rounded-full bg-[#228B22] flex items-center justify-center -mt-6 mb-1">
+                            <i class="fa fa-plus text-white"></i>
+                        </div>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-detail"></use>
+                        </svg>
+                        <span class="text-xs">知识</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-profile"></use>
+                        </svg>
+                        <span class="text-xs">我的</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 探索页面 -->
+        <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden relative bg-white shadow-lg">
+            <!-- 状态栏 -->
+            <div class="bg-[#87CEEB] text-white p-2 flex justify-between px-4">
+                <span>9:41</span>
+                <div class="flex gap-2">
+                    <i class="fa fa-signal"></i>
+                    <i class="fa fa-wifi"></i>
+                    <i class="fa fa-battery-full"></i>
+                </div>
+            </div>
+            
+            <!-- 主内容区 - 可滚动 -->
+            <div class="h-[calc(100%-120px)] overflow-y-auto pb-20">
+                <!-- 头部区域 -->
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800">探索自然</h1>
+                        <div class="flex gap-3">
+                            <button class="w-10 h-10 rounded-full bg-[#f0f8ff] flex items-center justify-center text-[#87CEEB]">
+                                <i class="fa fa-sliders"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 搜索栏 -->
+                    <div class="relative mb-6">
+                        <input type="text" placeholder="搜索植物、技巧或文章..." class="w-full bg-[#f8f9fa] border-none rounded-full py-3 px-10 focus:outline-none focus:ring-2 focus:ring-[#87CEEB]/30">
+                        <i class="fa fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <button class="absolute right-3 top-1/2 -translate-y-1/2 bg-[#87CEEB] text-white rounded-full w-8 h-8 flex items-center justify-center">
+                            <i class="fa fa-microphone"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- 筛选标签 -->
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <button class="px-4 py-2 bg-[#87CEEB] text-white rounded-full text-sm">全部</button>
+                        <button class="px-4 py-2 bg-[#f0f8ff] text-[#87CEEB] rounded-full text-sm">室内植物</button>
+                        <button class="px-4 py-2 bg-[#f0f8ff] text-[#87CEEB] rounded-full text-sm">园艺工具</button>
+                        <button class="px-4 py-2 bg-[#f0f8ff] text-[#87CEEB] rounded-full text-sm">有机肥料</button>
+                        <button class="px-4 py-2 bg-[#f0f8ff] text-[#87CEEB] rounded-full text-sm">季节性</button>
+                    </div>
+                </div>
+                
+                <!-- 探索内容网格 -->
+                <div class="px-6">
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="organic-card bg-white border border-gray-100 overflow-hidden water-animation">
+                            <img src="https://picsum.photos/seed/explore1/300/200" alt="多肉植物" class="w-full h-40 object-cover">
+                            <div class="p-4">
+                                <h4 class="font-semibold">多肉植物养护</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <span class="text-xs text-gray-500">12个技巧</span>
+                                    <span class="text-xs text-[#FFD700]"><i class="fa fa-star"></i> 4.8</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="organic-card bg-white border border-gray-100 overflow-hidden water-animation">
+                            <img src="https://picsum.photos/seed/explore2/300/200" alt="香草种植" class="w-full h-40 object-cover">
+                            <div class="p-4">
+                                <h4 class="font-semibold">香草植物种植</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <span class="text-xs text-gray-500">初学者指南</span>
+                                    <span class="text-xs text-[#FFD700]"><i class="fa fa-star"></i> 4.6</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="organic-card bg-white border border-gray-100 overflow-hidden water-animation">
+                            <img src="https://picsum.photos/seed/explore3/300/200" alt="室内花园" class="w-full h-40 object-cover">
+                            <div class="p-4">
+                                <h4 class="font-semibold">室内花园设计</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <span class="text-xs text-gray-500">空间规划</span>
+                                    <span class="text-xs text-[#FFD700]"><i class="fa fa-star"></i> 4.9</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="organic-card bg-white border border-gray-100 overflow-hidden water-animation">
+                            <img src="https://picsum.photos/seed/explore4/300/200" alt="季节性植物" class="w-full h-40 object-cover">
+                            <div class="p-4">
+                                <h4 class="font-semibold">四季植物选择</h4>
+                                <div class="flex justify-between items-center mt-2">
+                                    <span class="text-xs text-gray-500">全年指南</span>
+                                    <span class="text-xs text-[#FFD700]"><i class="fa fa-star"></i> 4.7</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 热门话题 -->
+                <div class="px-6 py-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">热门话题</h3>
+                        <a href="#" class="text-[#87CEEB] text-sm">更多</a>
+                    </div>
+                    
+                    <div class="flex gap-4 overflow-x-auto pb-4">
+                        <div class="organic-card bg-[#f0f8ff] p-4 min-w-[250px] flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs bg-white/80 text-[#87CEEB] px-2 py-1 rounded-full">趋势</span>
+                                <h4 class="font-semibold mt-2">城市园艺革命</h4>
+                                <p class="text-sm text-gray-600 mt-1">如何在城市环境中创造绿色空间</p>
+                            </div>
+                            <div class="flex justify-between items-center mt-3">
+                                <span class="text-xs text-gray-500">2.3k 阅读</span>
+                                <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#87CEEB]">
+                                    <i class="fa fa-bookmark-o"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="organic-card bg-[#f5f0f8] p-4 min-w-[250px] flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs bg-white/80 text-[#FFB6C1] px-2 py-1 rounded-full">新发现</span>
+                                <h4 class="font-semibold mt-2">有机种植方法</h4>
+                                <p class="text-sm text-gray-600 mt-1">无需化学肥料的种植技巧</p>
+                            </div>
+                            <div class="flex justify-between items-center mt-3">
+                                <span class="text-xs text-gray-500">1.8k 阅读</span>
+                                <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#FFB6C1]">
+                                    <i class="fa fa-bookmark-o"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="organic-card bg-[#f8f5e8] p-4 min-w-[250px] flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs bg-white/80 text-[#228B22] px-2 py-1 rounded-full">专家建议</span>
+                                <h4 class="font-semibold mt-2">植物疾病防治</h4>
+                                <p class="text-sm text-gray-600 mt-1">自然方法保护您的植物</p>
+                            </div>
+                            <div class="flex justify-between items-center mt-3">
+                                <span class="text-xs text-gray-500">3.1k 阅读</span>
+                                <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#228B22]">
+                                    <i class="fa fa-bookmark-o"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 数据可视化 -->
+                <div class="px-6 py-4">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">植物生长追踪</h3>
+                    
+                    <div class="organic-card bg-white border border-gray-100 p-5">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="font-semibold">我的植物健康指数</h4>
+                            <span class="text-[#228B22] font-medium">86%</span>
+                        </div>
+                        
+                        <div class="flex justify-around items-end mb-6">
+                            <div class="flex flex-col items-center">
+                                <div class="w-10 h-20 bg-gradient-to-t from-[#228B22] to-[#32CD32] rounded-t-lg mb-1" style="height: 80%;"></div>
+                                <span class="text-xs">光照</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-10 h-20 bg-gradient-to-t from-[#87CEEB] to-[#B0E0E6] rounded-t-lg mb-1" style="height: 90%;"></div>
+                                <span class="text-xs">水分</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-10 h-20 bg-gradient-to-t from-[#8B4513] to-[#A0522D] rounded-t-lg mb-1" style="height: 70%;"></div>
+                                <span class="text-xs">土壤</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-10 h-20 bg-gradient-to-t from-[#FFD700] to-[#FFEA00] rounded-t-lg mb-1" style="height: 85%;"></div>
+                                <span class="text-xs">营养</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center">
+                            <svg class="w-32 h-32" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="#f0f0f0" stroke-width="8"/>
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="#228B22" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="42" class="progress-ring"/>
+                                <text x="50" y="55" text-anchor="middle" font-size="16" font-weight="bold">86%</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-3 px-6">
+                <div class="flex justify-around">
+                    <button class="flex flex-col items-center text-gray-400">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-home"></use>
+                        </svg>
+                        <span class="text-xs">首页</span>
+                    </button>
+                    <button class="flex flex-col items-center text-[#87CEEB]">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-explore"></use>
+                        </svg>
+                        <span class="text-xs">探索</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <div class="w-12 h-12 rounded-full bg-[#87CEEB] flex items-center justify-center -mt-6 mb-1">
+                            <i class="fa fa-plus text-white"></i>
+                        </div>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-detail"></use>
+                        </svg>
+                        <span class="text-xs">知识</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-profile"></use>
+                        </svg>
+                        <span class="text-xs">我的</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 个人中心页面 -->
+        <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden relative bg-white shadow-lg">
+            <!-- 状态栏 -->
+            <div class="bg-[#8B4513] text-white p-2 flex justify-between px-4">
+                <span>9:41</span>
+                <div class="flex gap-2">
+                    <i class="fa fa-signal"></i>
+                    <i class="fa fa-wifi"></i>
+                    <i class="fa fa-battery-full"></i>
+                </div>
+            </div>
+            
+            <!-- 主内容区 - 可滚动 -->
+            <div class="h-[calc(100%-120px)] overflow-y-auto pb-20">
+                <!-- 个人信息头部 -->
+                <div class="bg-gradient-to-br from-[#8B4513] to-[#A0522D] h-48 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-full opacity-10">
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="w-full h-full">
+                            <path d="M0,0 Q50,20 100,0 Q50,40 0,0" fill="white"/>
+                            <path d="M0,30 Q50,50 100,30 Q50,70 0,30" fill="white"/>
+                            <path d="M0,60 Q50,80 100,60 Q50,100 0,60" fill="white"/>
+                        </svg>
+                    </div>
+                    
+                    <div class="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-20 h-20 rounded-full border-4 border-white overflow-hidden">
+                                <img src="https://picsum.photos/seed/profile/200/200" alt="个人头像" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h2 class="text-white font-bold text-xl">自然爱好者</h2>
+                                <p class="text-white/80 text-sm">有机生活实践者</p>
+                            </div>
+                        </div>
+                        <button class="bg-white/20 text-white rounded-full px-4 py-2 text-sm">
+                            <i class="fa fa-edit mr-1"></i> 编辑
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 个人数据卡片 -->
+                <div class="px-6 -mt-6">
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="organic-card bg-white border border-gray-100 p-4 text-center">
+                            <h3 class="text-2xl font-bold text-[#8B4513]">12</h3>
+                            <p class="text-sm text-gray-600">我的植物</p>
+                        </div>
+                        <div class="organic-card bg-white border border-gray-100 p-4 text-center">
+                            <h3 class="text-2xl font-bold text-[#228B22]">24</h3>
+                            <p class="text-sm text-gray-600">收藏文章</p>
+                        </div>
+                        <div class="organic-card bg-white border border-gray-100 p-4 text-center">
+                            <h3 class="text-2xl font-bold text-[#87CEEB]">8</h3>
+                            <p class="text-sm text-gray-600">完成任务</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 功能菜单 -->
+                <div class="px-6 py-6">
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <button class="organic-card bg-[#f8f5e8] p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#228B22]">
+                                <i class="fa fa-leaf"></i>
+                            </div>
+                            <span>我的植物库</span>
+                        </button>
+                        <button class="organic-card bg-[#f0f8ff] p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#87CEEB]">
+                                <i class="fa fa-bookmark"></i>
+                            </div>
+                            <span>收藏内容</span>
+                        </button>
+                        <button class="organic-card bg-[#f5e8e8] p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#8B4513]">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <span>养护日历</span>
+                        </button>
+                        <button class="organic-card bg-[#f8f0f5] p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#FFB6C1]">
+                                <i class="fa fa-certificate"></i>
+                            </div>
+                            <span>成就徽章</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 最近活动 -->
+                <div class="px-6 py-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">最近活动</h3>
+                        <a href="#" class="text-[#8B4513] text-sm">查看全部</a>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="organic-card bg-white border border-gray-100 p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[#f8f5e8] flex items-center justify-center text-[#228B22] flex-shrink-0">
+                                <i class="fa fa-check"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm">完成了<span class="font-medium">多肉植物养护</span>课程</p>
+                                <p class="text-xs text-gray-500">昨天 14:30</p>
+                            </div>
+                        </div>
+                        
+                        <div class="organic-card bg-white border border-gray-100 p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[#f0f8ff] flex items-center justify-center text-[#87CEEB] flex-shrink-0">
+                                <i class="fa fa-plus"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm">添加了新植物<span class="font-medium">绿萝</span>到收藏</p>
+                                <p class="text-xs text-gray-500">2天前</p>
+                            </div>
+                        </div>
+                        
+                        <div class="organic-card bg-white border border-gray-100 p-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[#f8f0f5] flex items-center justify-center text-[#FFB6C1] flex-shrink-0">
+                                <i class="fa fa-gift"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm">获得了<span class="font-medium">植物达人</span>徽章</p>
+                                <p class="text-xs text-gray-500">3天前</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 设置与帮助 -->
+                <div class="px-6 py-6">
+                    <div class="organic-card bg-white border border-gray-100 p-5">
+                        <h3 class="text-lg font-semibold mb-4">设置与帮助</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa fa-cog text-[#8B4513]"></i>
+                                    <span>账户设置</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-gray-300"></i>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa fa-bell text-[#8B4513]"></i>
+                                    <span>通知管理</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-gray-300"></i>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa fa-question-circle text-[#8B4513]"></i>
+                                    <span>帮助中心</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-gray-300"></i>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa fa-life-ring text-[#8B4513]"></i>
+                                    <span>联系客服</span>
+                                </div>
+                                <i class="fa fa-chevron-right text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-3 px-6">
+                <div class="flex justify-around">
+                    <button class="flex flex-col items-center text-gray-400">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-home"></use>
+                        </svg>
+                        <span class="text-xs">首页</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-explore"></use>
+                        </svg>
+                        <span class="text-xs">探索</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <div class="w-12 h-12 rounded-full bg-[#8B4513] flex items-center justify-center -mt-6 mb-1">
+                            <i class="fa fa-plus text-white"></i>
+                        </div>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-detail"></use>
+                        </svg>
+                        <span class="text-xs">知识</span>
+                    </button>
+                    <button class="flex flex-col items-center text-[#8B4513]">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-profile"></use>
+                        </svg>
+                        <span class="text-xs">我的</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 详情页面 -->
+        <div class="w-[375px] h-[812px] border border-gray-300 rounded-3xl overflow-hidden relative bg-white shadow-lg">
+            <!-- 状态栏 -->
+            <div class="bg-[#FFB6C1] text-white p-2 flex justify-between px-4">
+                <span>9:41</span>
+                <div class="flex gap-2">
+                    <i class="fa fa-signal"></i>
+                    <i class="fa fa-wifi"></i>
+                    <i class="fa fa-battery-full"></i>
+                </div>
+            </div>
+            
+            <!-- 主内容区 - 可滚动 -->
+            <div class="h-[calc(100%-120px)] overflow-y-auto pb-20">
+                <!-- 头部图片 -->
+                <div class="relative h-64">
+                    <img src="https://picsum.photos/seed/detail1/800/500" alt="玫瑰种植指南" class="w-full h-full object-cover">
+                    <div class="absolute top-4 left-4">
+                        <button class="w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white">
+                            <i class="fa fa-arrow-left"></i>
+                        </button>
+                    </div>
+                    <div class="absolute top-4 right-4">
+                        <button class="w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white">
+                            <i class="fa fa-bookmark-o"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 内容详情 -->
+                <div class="px-6 -mt-10">
+                    <div class="organic-card bg-white border border-gray-100 p-6 shadow-lg">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="bg-[#FFB6C1]/20 text-[#FFB6C1] px-3 py-1 rounded-full text-xs">花卉种植</span>
+                                <h1 class="text-2xl font-bold mt-2">玫瑰种植完全指南</h1>
+                                <div class="flex items-center mt-2 gap-4">
+                                    <div class="flex items-center">
+                                        <i class="fa fa-star text-[#FFD700] mr-1"></i>
+                                        <span class="text-sm">4.9 (256评价)</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fa fa-eye text-gray-400 mr-1"></i>
+                                        <span class="text-sm">12.5k 阅读</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 rounded-full overflow-hidden">
+                                <img src="https://picsum.photos/seed/author1/100/100" alt="作者头像" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h4 class="font-medium">园艺专家李明</h4>
+                                <p class="text-xs text-gray-500">认证园艺师 • 10年经验</p>
+                            </div>
+                            <button class="ml-auto bg-[#FFB6C1] text-white px-4 py-2 rounded-full text-sm">
+                                关注
+                            </button>
+                        </div>
+                        
+                        <!-- 内容导航 -->
+                        <div class="flex justify-between mb-6 border-b border-gray-100">
+                            <button class="pb-3 text-[#FFB6C1] font-medium border-b-2 border-[#FFB6C1]">详情</button>
+                            <button class="pb-3 text-gray-400">步骤</button>
+                            <button class="pb-3 text-gray-400">问答</button>
+                            <button class="pb-3 text-gray-400">评论</button>
+                        </div>
+                        
+                        <!-- 内容正文 -->
+                        <div class="space-y-4">
+                            <p class="text-gray-700">玫瑰是最受欢迎的花卉之一，其美丽的花朵和迷人的香气使其成为花园中的瑰宝。本指南将帮助您从选择品种到日常养护，全面掌握玫瑰种植技巧。</p>
+                            
+                            <h3 class="text-lg font-semibold">选择合适的品种</h3>
+                            <p class="text-gray-700">根据您的气候条件和种植目的选择合适的玫瑰品种。杂交茶香玫瑰适合切花，灌木玫瑰适合花园种植，攀援玫瑰适合墙面装饰。</p>
+                            
+                            <div class="organic-shape bg-[#fff0f5] p-4 my-4">
+                                <h4 class="font-medium text-[#FFB6C1] mb-2">专家提示</h4>
+                                <p class="text-sm text-gray-700">玫瑰喜欢充足的阳光，每天至少需要6小时的直射阳光。选择排水良好的土壤，并定期施肥以保证健康生长。</p>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold">种植时间与方法</h3>
+                            <p class="text-gray-700">最佳种植时间是春季或秋季。挖一个宽45厘米、深30厘米的坑，加入腐熟的有机肥，将玫瑰苗放入并确保嫁接口高出地面。</p>
+                            
+                            <!-- 图片展示 -->
+                            <div class="grid grid-cols-2 gap-3 my-4">
+                                <img src="https://picsum.photos/seed/rose1/400/300" alt="玫瑰种植步骤1" class="rounded-xl w-full h-40 object-cover">
+                                <img src="https://picsum.photos/seed/rose2/400/300" alt="玫瑰种植步骤2" class="rounded-xl w-full h-40 object-cover">
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold">日常养护要点</h3>
+                            <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                                <li>保持土壤湿润但不过湿</li>
+                                <li>定期修剪以促进新枝生长</li>
+                                <li>春季和夏季施肥</li>
+                                <li>及时防治病虫害</li>
+                                <li>花期后及时摘除凋谢花朵</li>
+                            </ul>
+                            
+                            <!-- 养护日历 -->
+                            <div class="bg-[#f8f8f8] p-4 rounded-xl my-4">
+                                <h4 class="font-medium mb-3">月度养护日历</h4>
+                                <div class="grid grid-cols-4 gap-2">
+                                    <div class="text-center p-2 bg-white rounded-lg">
+                                        <span class="text-xs font-medium">一月</span>
+                                        <p class="text-xs text-gray-600">修剪</p>
+                                    </div>
+                                    <div class="text-center p-2 bg-white rounded-lg">
+                                        <span class="text-xs font-medium">二月</span>
+                                        <p class="text-xs text-gray-600">施肥</p>
+                                    </div>
+                                    <div class="text-center p-2 bg-white rounded-lg">
+                                        <span class="text-xs font-medium">三月</span>
+                                        <p class="text-xs text-gray-600">种植</p>
+                                    </div>
+                                    <div class="text-center p-2 bg-white rounded-lg">
+                                        <span class="text-xs font-medium">四月</span>
+                                        <p class="text-xs text-gray-600">浇水</p>
+                                    </div>
+                                    <!-- 更多月份... -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 相关内容 -->
+                        <div class="mt-8">
+                            <h3 class="text-lg font-semibold mb-4">相关推荐</h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="organic-card bg-[#fff0f5] p-3">
+                                    <img src="https://picsum.photos/seed/related1/300/200" alt="相关内容1" class="w-full h-24 object-cover rounded-lg mb-2">
+                                    <h4 class="text-sm font-medium">玫瑰病虫害防治</h4>
+                                </div>
+                                <div class="organic-card bg-[#f0fff5] p-3">
+                                    <img src="https://picsum.photos/seed/related2/300/200" alt="相关内容2" class="w-full h-24 object-cover rounded-lg mb-2">
+                                    <h4 class="text-sm font-medium">有机玫瑰肥料制作</h4>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 操作按钮 -->
+                        <div class="flex gap-3 mt-6">
+                            <button class="flex-1 bg-[#FFB6C1] text-white py-3 rounded-full font-medium">
+                                收藏本文
+                            </button>
+                            <button class="flex-1 bg-white border border-[#FFB6C1] text-[#FFB6C1] py-3 rounded-full font-medium">
+                                分享
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部标签栏 -->
+            <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-3 px-6">
+                <div class="flex justify-around">
+                    <button class="flex flex-col items-center text-gray-400">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-home"></use>
+                        </svg>
+                        <span class="text-xs">首页</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-explore"></use>
+                        </svg>
+                        <span class="text-xs">探索</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <div class="w-12 h-12 rounded-full bg-[#FFB6C1] flex items-center justify-center -mt-6 mb-1">
+                            <i class="fa fa-plus text-white"></i>
+                        </div>
+                    </button>
+                    <button class="flex flex-col items-center text-[#FFB6C1]">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-detail"></use>
+                        </svg>
+                        <span class="text-xs">知识</span>
+                    </button>
+                    <button class="flex flex-col items-center text-gray-400">
+                        <svg class="w-6 h-6 mb-1" viewBox="0 0 24 24">
+                            <use href="#icon-profile"></use>
+                        </svg>
+                        <span class="text-xs">我的</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自然装饰元素 -->
+    <svg class="fixed bottom-10 right-10 w-20 h-20 plant-animation opacity-20" viewBox="0 0 100 100">
+        <path d="M50,100 C50,70 30,50 50,30 C70,50 50,70 50,100" fill="none" stroke="#228B22" stroke-width="3"/>
+        <circle cx="50" cy="30" r="8" fill="#228B22"/>
+        <path d="M50,30 C60,20 70,10 75,20" fill="none" stroke="#228B22" stroke-width="3"/>
+        <path d="M50,30 C40,20 30,10 25,20" fill="none" stroke="#228B22" stroke-width="3"/>
+    </svg>
+
+    <script>
+        // 简单的交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为所有卡片添加悬浮效果
+            const cards = document.querySelectorAll('.organic-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.filter = 'drop-shadow(0 10px 8px rgb(0 0 0 / 0.1))';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.filter = 'none';
+                });
+            });
+            
+            // 模拟进度环动画
+            const progressCircle = document.querySelector('.progress-ring circle');
+            if (progressCircle) {
+                const radius = progressCircle.r.baseVal.value;
+                const circumference = radius * 2 * Math.PI;
+                
+                progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+                const offset = circumference - (86 / 100) * circumference;
+                progressCircle.style.strokeDashoffset = offset;
+            }
+        });
+    </script>
+</body>
+</html>
