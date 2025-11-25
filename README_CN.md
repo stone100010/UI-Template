@@ -1,11 +1,12 @@
-# 🎨 UI模板项目
+# 🎨 AI UI 设计生成器
 
-一个现代化的UI设计模板集合，包含多种设计风格的HTML模板和交互式预览工具。
+一个现代化的AI UI设计生成器，包含多种设计风格的HTML模板和智能预览工具。
 
 ## ✨ 项目特色
 
+- 🤖 **AI智能生成** - 基于需求描述自动生成UI设计
 - 🎯 **多风格模板** - 9种精心设计的UI风格模板
-- 👀 **实时预览** - 内置HTML页面预览器
+- 👀 **实时预览** - 内置AI设计预览器
 - 📱 **响应式设计** - 适配各种设备屏幕
 - 🚀 **开箱即用** - 完整的HTML/CSS/JS代码
 - 🎨 **现代设计** - 基于Tailwind CSS和FontAwesome
@@ -14,23 +15,21 @@
 
 ```
 UI-Template/
-├── 📄 index.html          # HTML页面预览器
+├── 📄 index.html          # AI UI设计生成器（预览器）
 ├── 🚀 start.sh            # 项目启动脚本
-├── 📄 README_CN.md        # 项目文档说明
+├── 📂 htmls/              # HTML模板页面（9种设计风格 + 应用示例）
+│   ├── 🌌 Cyberpunk-doubao.html     # 赛博朋克风格UI
+│   ├── 🌐 3d-doubao.html           # 3D立体风格UI
+│   ├── 🎨 Bauhaus-doubao.html      # 包豪斯设计风格UI
+│   ├── 📱 Flat-doubao.html         # 扁平化设计风格UI
+│   ├── 🚀 Futurism-doubao.html     # 未来主义风格UI
+│   ├── ⚙️ Industrial-doubao.html   # 工业风格UI
+│   ├── 💫 Modern-minimal-doubao.html # 现代简约风格UI
+│   ├── 🌿 Organic-doubao.html      # 有机自然风格UI
+│   ├── 📻 Retro-vintage-doubao.html # 复古经典风格UI
+│   └── 💎 health-doubao.html       # 玻璃拟态设计UI示例
 ├── 📄 LICENSE             # MIT许可证
-├── 📄 README.md           # 英文项目说明
-├── 📄 .gitignore          # Git忽略文件
-└── 📂 htmls/              # HTML模板页面（10种设计风格）
-    ├── 🌌 Cyberpunk-doubao.html      # 赛博朋克风格UI
-    ├── 🌐 3d-doubao.html            # 3D立体风格UI
-    ├── 🎨 bauhaus-doubao.html       # 包豪斯设计风格UI
-    ├── 📱 flat-doubao.html          # 扁平化设计风格UI
-    ├── 🚀 futurism-doubao.html      # 未来主义风格UI
-    ├── ⚙️ industrial-doubao.html    # 工业风格UI
-    ├── 💫 modern-minimal-doubao.html # 现代简约风格UI
-    ├── 🌿 organic-doubao.html       # 有机自然风格UI
-    ├── 📻 retro-vintage-doubao.html # 复古经典风格UI
-    └── 🏥 health-doubao.html        # 健康追踪应用UI示例
+└── 📄 README_CN.md        # 项目说明文档
 ```
 
 ## 🎨 设计风格
@@ -94,7 +93,7 @@ chmod +x start.sh
 
 访问地址：
 - **本机访问**: http://localhost:8000/index.html
-- **局域网访问**: http://[你的IP]:8000/index.html
+- **局域网访问**: http://[你的IP地址]:8000/index.html
 
 ### 方法二：手动启动
 
@@ -108,19 +107,20 @@ http://localhost:8000/index.html
 
 ## 📋 使用说明
 
-### 预览器功能
-- **页面列表**: 左侧显示可用的HTML页面
-- **实时预览**: 选择页面即可实时查看效果
-- **搜索功能**: 快速查找特定页面
-- **全屏模式**: 点击全屏按钮进入沉浸式预览
-- **新标签打开**: 在新标签页中打开页面
-- **响应式预览**: 模拟不同设备的显示效果
+### AI设计生成器功能
+- **智能输入**: 输入需求描述，AI将生成对应的UI设计
+- **多风格展示**: 预设9种设计风格的模板供选择
+- **实时预览**: 选择设计风格即可实时预览效果
+- **卡片式浏览**: 直观的设计风格展示界面
+- **全屏预览**: 点击卡片进入全屏预览模式
+- **新窗口打开**: 在新标签页中查看完整设计
+- **响应式设计**: 自动适配不同设备的显示效果
 
 ### 自定义模板
 1. 在 `htmls/` 目录下创建新的HTML文件
 2. 遵循项目的设计规范和代码结构
 3. 使用Tailwind CSS进行样式设计
-4. 通过预览器查看效果
+4. 更新 `index.html` 中的 `htmlFiles` 数组，添加新模板信息
 
 ## 🛠️ 技术栈
 
@@ -150,8 +150,8 @@ http://localhost:8000/index.html
 
 ## 📱 设计模板展示
 
-### 🎨 十种设计风格模板
-项目包含10种精心设计的UI风格模板：
+### 🎨 九种设计风格模板
+项目包含9种精心设计的UI风格模板：
 
 #### 🌌 赛博朋克风格
 - 霓虹发光效果、科技感字体、故障艺术元素
@@ -181,7 +181,7 @@ http://localhost:8000/index.html
 - 复古字体、纹理效果、怀旧元素
 
 ### 🏥 健康追踪应用示例
-展示健康管理类应用的界面应用，展示：
+展示健康管理类应用的界面设计，包含：
 - 健康数据展示
 - 进度图表
 - 卡片式布局  
@@ -191,14 +191,21 @@ http://localhost:8000/index.html
 
 ### 添加新的UI模板
 1. 在 `htmls/` 目录创建新的HTML文件
-2. 参考现有的模板结构
-3. 在预览器的 `htmlFiles` 数组中添加文件信息
-4. 更新文件名、描述、分类等信息
+2. 参考现有的模板结构和设计风格
+3. 在 `index.html` 的JavaScript中更新 `htmlFiles` 数组
+4. 添加文件名、显示名称、描述等信息
 
-### 修改预览器
+### 修改AI设计生成器
 - 编辑 `index.html` 中的JavaScript代码
 - 自定义样式和交互效果
-- 添加新的功能特性
+- 扩展AI生成功能的提示词配置
+- 添加新的UI设计功能特性
+
+### 更新提示词配置
+在 `index.html` 的JavaScript中，你可以自定义：
+- 设计风格描述的提示词
+- 不同风格模板的映射逻辑
+- 生成过程中的用户交互
 
 ## 📄 许可证
 
@@ -220,11 +227,12 @@ http://localhost:8000/index.html
 
 ## 📊 项目统计
 
-- ✅ **10种设计风格** - 涵盖现代设计的各个领域
+- ✅ **AI智能生成** - 基于描述的智能UI设计生成
+- ✅ **9种设计风格** - 涵盖现代设计的各个领域
 - ✅ **10个HTML页面** - 完整的可交互模板
-- ✅ **1个预览器** - 实时查看所有模板效果
+- ✅ **1个AI生成器** - 智能设计和实时预览功能
 - ✅ **100%开源** - 完整源代码可定制
 
 ⭐ **如果这个项目对你有帮助，请给我们一个Star！**
 
-*构建现代化、美观的用户界面，10种设计风格让设计更简单！*
+*AI驱动的现代化UI设计生成器，多种设计风格让创作更简单！*
